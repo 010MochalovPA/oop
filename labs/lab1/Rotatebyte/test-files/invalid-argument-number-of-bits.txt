@@ -1,0 +1,2 @@
+Invalid argument <number of bits>
+Usage: rotatebyte.exe <byte> <number of bits> <L / R>

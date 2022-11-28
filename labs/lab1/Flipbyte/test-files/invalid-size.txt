@@ -1,0 +1,2 @@
+Argument <byte> exceeds 1 byte
+Usage: flipbyte.exe <byte>

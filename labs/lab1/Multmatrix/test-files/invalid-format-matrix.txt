@@ -1,0 +1,2 @@
+Invalid type of some matrix elements or format matrix
+Usage: multmatrix.exe <matrix3x3 file1> <matrix3x3 file2>

@@ -1,0 +1,2 @@
+Invalid input matrix
+Usage: invert.exe <matrix file1>

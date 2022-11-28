@@ -1,0 +1,2 @@
+Failed to open one of the files for reading
+Usage: compare.exe <file1> <file2>

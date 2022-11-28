@@ -1,0 +1,2 @@
+Failed to open <input file> for reading
+Usage: findtext.exe <file name> <text to search>

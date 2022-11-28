@@ -1,0 +1,2 @@
+Invalid notation
+Usage: dec2bin.exe <binary number>

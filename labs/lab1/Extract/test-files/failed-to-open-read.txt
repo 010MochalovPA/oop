@@ -1,0 +1,2 @@
+Failed to open <input file> for reading
+Usage: extract.exe <input file> <output file> <start position> <fragment size>

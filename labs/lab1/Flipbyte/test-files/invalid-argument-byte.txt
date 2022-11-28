@@ -1,0 +1,2 @@
+Invalid argument
+Usage: flipbyte.exe <byte>

@@ -1,0 +1,2 @@
+Incorrect start position or fragment size
+Usage: extract.exe <input file> <output file> <start position> <fragment size>

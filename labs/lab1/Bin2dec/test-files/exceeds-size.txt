@@ -1,0 +1,2 @@
+Invalid size binary number
+Usage: bin2dec.exe <binary number>
