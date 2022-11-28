@@ -3,7 +3,7 @@
 
 using namespace std;
 
-const unsigned int RADIX = 10;
+const int RADIX = 10;
 const unsigned int MAX_INT = numeric_limits<unsigned int>::max();
 
 unsigned int ConvertStringToInt(const string&);
