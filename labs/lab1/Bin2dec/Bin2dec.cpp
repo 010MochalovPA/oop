@@ -30,11 +30,6 @@ void ThrowExceptionForInvalidCountArgs(const int argc)
 
 string ConvertIntToString(unsigned int decNumber)
 {
-	if (decNumber == 0)
-	{
-		return "0";
-	}
-
 	string result = "";
 
 	while (decNumber > 0)
@@ -43,7 +38,7 @@ string ConvertIntToString(unsigned int decNumber)
 		decNumber = decNumber / RADIX;
 	}
 
-	return result;
+	return result == "" ? "0" : result;
 }
 
 void ThrowExceptionForInvalidSize(const string& value)
