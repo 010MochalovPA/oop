@@ -45,6 +45,20 @@ if NOT ERRORLEVEL 1 goto err
 fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument.txt
 if ERRORLEVEL 1 goto err
 
+rem проверяем 0
+echo test 2 10 0
+%PROGRAM% 2 10 0 > %TEMP%\output.txt
+if ERRORLEVEL 1 goto err
+fc.exe %TEMP%\output.txt %PATH_TEST%\correct-output-for-0.txt
+if ERRORLEVEL 1 goto err
+
+rem проверяем на русский символ
+echo test 16 10 А1
+%PROGRAM% 16 10 А1 > %TEMP%\output.txt
+if NOT ERRORLEVEL 1 goto err
+fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument.txt
+if ERRORLEVEL 1 goto err
+
 rem проверка числа привышающего размер (выходящие за границы)
 echo test 10 12 2147483648
 %PROGRAM% 10 12 2147483648 > %TEMP%\output.txt

@@ -1,2 +1,2 @@
 Invalid argument count
-Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>
+Usage: replace.exe <input file> <output file> <search string> <replace string>

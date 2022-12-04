@@ -3,22 +3,69 @@
 #include <iostream>
 
 using namespace std;
-void CloseStreams(ifstream& input, ofstream& output);
+
+struct Args
+{
+	string inputFileName;
+	string outputFileName;
+	string searchString;
+	string replaceString;
+};
 
 string ReplaceString(const string& subject,
 	const string& searchString, const string& replacementString);
 
-void CopyStreamWithReplacement(istream& input, ostream& output,
+void CopyFileWithReplacement(const string& inputFileName, const string& outputFileName,
 	const string& searchString, const string& replacementString);
 
-int CopyFileWithReplacement(const string& inputFileName, const string& outputFileName,
-	const string& searchString, const string& replacementString);
+Args ParseArgs(const int, char*[]);
+std::ifstream OpenInputFileStream(const std::string&);
+std::string ConcatStringWithMessage(const std::string&);
 
-
-void CloseStreams(ifstream& input, ofstream& output)
+Args ParseArgs(const int argc, char* argv[])
 {
-	input.close();
-	output.close();
+	if (argc != 5)
+	{
+		throw std::range_error("Invalid argument count");
+	}
+
+	Args args = {};
+	args.inputFileName = argv[1];
+	args.outputFileName = argv[2];
+	args.searchString = argv[3];
+	args.replaceString = argv[4];
+
+	return args;
+}
+
+std::ifstream OpenInputFileStream(const std::string& fileName)
+{
+	std::ifstream input(fileName, std::ios::binary);
+
+	if (!input.is_open())
+	{
+		throw std::invalid_argument("Failed to open <input file> for reading");
+	}
+
+	return input;
+}
+
+std::ofstream OpenOutputFileStream(const std::string& fileName)
+{
+	std::ofstream output(fileName, std::ios::binary);
+
+	if (!output.is_open())
+	{
+		throw std::invalid_argument("Failed to open <input file> for reading");
+	}
+
+	return output;
+}
+
+std::string ConcatStringWithMessage(const std::string& string)
+{
+	return string + '\n'
+		+ "Usage: replace.exe <input file> <output file> <search string> <replace string>" + '\n';
 }
 
 // Возвращает результат замены всех вхождения строки searchString внутри строки subject на replacementString
@@ -56,42 +103,20 @@ string ReplaceString(const string& subject,
 			position = subject.length();
 		}
 
-
 	}
 	return result;
 }
 
-void CopyStreamWithReplacement(istream& input, ostream& output,
+void CopyFileWithReplacement(const string& inputFileName, const string& outputFileName,
 	const string& searchString, const string& replacementString)
 {
-	string line;
-
-	while (getline(input, line))
-	{
-		output << ReplaceString(line, searchString, replacementString) << endl;
-	}
-}
-
-int CopyFileWithReplacement(const string& inputFileName, const string& outputFileName,
-	const string& searchString, const string& replacementString)
-{
-	ifstream input(inputFileName);
+	ifstream input = OpenInputFileStream(inputFileName);
 	
-	if (!input.is_open())
-	{
-		cout << "Failed to open " << inputFileName << " for reading" << endl;
-		return 1;
-	}
 
-	ofstream output(outputFileName);
-
-	if (!output.is_open())
-	{
-		cout << "Failed to open " << outputFileName << " for writing" << endl;
-		return 1;
-	}
+	ofstream output = OpenOutputFileStream(outputFileName);
 	
 	string line;
+	string result;
 
 	while (getline(input, line))
 	{
@@ -99,36 +124,25 @@ int CopyFileWithReplacement(const string& inputFileName, const string& outputFil
 
 		if (!output.flush()) // Если не удалось сбросить данные на диск
 		{
-			cout << "Failed to save data on disk" << endl;
-			return 1;
-		}
-		
+			throw std::exception("Failed to save data on disk");
+		}	
 	}
-
-	CloseStreams(input, output);
-	return 0;
-	
 }
 
 int main(int argc, char* argv[])
 {
-	if (argc != 5)
+
+	try
 	{
-		cout << "Invalid argument count" << endl
-			 << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << endl;
+		Args args = ParseArgs(argc, argv);
+
+		CopyFileWithReplacement(args.inputFileName, args.outputFileName, args.searchString, args.replaceString);
+	}
+	catch (const std::exception& exception)
+	{
+		std::cout << ConcatStringWithMessage(exception.what());
+
 		return 1;
 	}
-
-	// Самостоятельно выделите код копирования содержимого файла в отдельную функцию CopyFileWithReplacement, ??????
-	// принимающую имена файлов, а также строки для поиска и замены
-	// Добавьте обработку ошибок
-
-	string inputFileName = argv[1];
-	string outputFileName = argv[2];
-	string searchString = argv[3];
-	string replaceString = argv[4];
-
-
-	return CopyFileWithReplacement(inputFileName, outputFileName, searchString, replaceString);
 	
 }

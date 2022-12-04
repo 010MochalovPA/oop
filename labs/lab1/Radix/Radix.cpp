@@ -1,34 +1,38 @@
 ﻿#include <iostream>
 #include <string>
-
-using namespace std;
+#include <limits>
 
 const int MIN_RADIX = 2;
 const int MAX_RADIX = 36;
 const int DEC_RADIX = 10;
-const int MAX_INT = numeric_limits<int>::max();
 
 struct Args
 {
 	int sourseNotation;
 	int destinationNotation;
-	string value;
+	std::string value;
 };
 
-void ThrowExceptionForIncorrectChar(char ch, int radix);
-void ThrowExceptionForIncorrectNotation(int radix);
-void ThrowExceptionForOverflowInt(unsigned int, unsigned int);
-int ConvertStringToInt(const string& strNumber, int radix);
-string ConvertIntToString(int n, int radix);
-string ConvertSourceToDestNotation(const string& value, int sourceNotation, int destinationNotation);
-string JoinExceptionString(const string&);
-Args ParseArgs(const int&, char*[]);
+int SafeAdd(int, int);
+int SafeMultiply(int, int);
+int ConvertStringToInt(const std::string&, int /*radix*/);
+int DigitToInt(char, int /*radix*/);
+void ThrowOnEmptyString(const std::string&);
+void ThrowOnIncorrectNotation(int /*radix*/);
+void ThrowOnIncorrectDigitNotation(char, int /*radix*/);
+void ThrowOnOverflowOnAddition(int, int);
+void ThrowOnOverflowOnMultiply(int, int);
+std::string ConvertIntToString(int, int /*radix*/);
+std::string ConvertSourceToDestNotation(const std::string& /*value*/, int /*sourceNotation*/, int /*destinationNotation*/);
+std::string ConcatStringWithMessage(const std::string&);
+Args ParseArgs(const int, char*[]);
 
-Args ParseArgs(const int& argc, char* argv[])
+//argc принимать по значению
+Args ParseArgs(const int argc, char* argv[])
 {
 	if (argc != 4)
 	{
-		throw "Invalid argument count";
+		throw std::range_error("Invalid argument count");
 	}
 
 	Args args = {};
@@ -39,45 +43,153 @@ Args ParseArgs(const int& argc, char* argv[])
 	return args;
 }
 
-void ThrowExceptionForOverflowInt(int a, int b)
+void ThrowOnEmptyString(const std::string& str)
 {
-	if (MAX_INT - a < b)
+	if (str.length() == 0)
 	{
-		throw "Invalid argument";
+		throw std::invalid_argument("Invalid argument");
 	}
 }
 
-string JoinExceptionString(const string& exception)
+void ThrowOnOverflowOnAddition(int a, int b)
 {
-	return exception + '\n'
+	if (b > 0 && a > (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (b < 0 && a < (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+}
+
+void ThrowOnIncorrectDigitNotation(char ch, int radix) 
+{
+	if (ch > '9')
+	{
+		if (ch < 'A' || ch > 'A' + radix - DEC_RADIX)
+		{
+			throw std::invalid_argument("Invalid argument");
+		}
+	}
+	else
+	{
+		if (ch - '0' > radix || ch < '0')
+		{
+			throw std::invalid_argument("Invalid argument");
+		}
+	}
+}
+
+void ThrowOnOverflowOnMultiply(int a, int b)
+{
+	if (a > 0 && b > 0 && a > (INT_MAX / b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a > 0 && b < 0 && b < (INT_MIN / a))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b > 0 && a < (INT_MIN / b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b < 0 && b < (INT_MAX / a))
+	{
+		throw std::overflow_error("Invalid argument"); 
+	}
+}
+
+int SafeAdd(int a, int b)
+{
+	// TODO: check for overflow
+	ThrowOnOverflowOnAddition(a, b);
+	return a + b;
+}
+
+int SafeMultiply(int a, int b)
+{
+	ThrowOnOverflowOnMultiply(a, b);
+	return a * b;
+}
+
+// Название функции не должно зависеть от контекста её использования, если тело не зависит
+std::string ConcatStringWithMessage(const std::string& string)
+{
+	return string + '\n'
 		+ "Usage: radix.exe <source notation> <destination notation> <value>" + '\n';
 }
 
-int ConvertStringToInt(const string& strNumber, int radix)
+// Переводит символ ch в число в системе счисления radix
+// Выбрасывает исключение, если ch -- не цифра в этой счисления
+int DigitToInt(char ch, int radix)
 {
-	ThrowExceptionForIncorrectNotation(radix);
+	ThrowOnIncorrectDigitNotation(ch, radix);
+	
+	if (ch > '9')
+	{
+		return ch - 'A' + DEC_RADIX;
+	}
+
+	return ch - '0';
+}
+
+char IntToDigit(int a, int radix)
+{
+	if (a > 9)
+	{
+		char result = a + 'A' - DEC_RADIX;
+
+		ThrowOnIncorrectDigitNotation(result, radix);
+
+		return result;
+	}
+
+	char result = a + '0';
+
+	ThrowOnIncorrectDigitNotation(result, radix);
+
+	return result;
+}
+
+int ConvertStringToInt(const std::string& strNumber, int radix)
+{
+	// А если строка strNumber пустая?
+	ThrowOnEmptyString(strNumber);
+
+	ThrowOnIncorrectNotation(radix);
+
+	if (strNumber == "0")
+	{
+		return 0;
+	}
 
 	int result = 0;
+
 	for (unsigned int i = (strNumber[0] != '-') ? 0 : 1; i < strNumber.length(); i++)
 	{
-		
-		ThrowExceptionForIncorrectChar(strNumber[i], radix);
-		
- 		ThrowExceptionForOverflowInt(result * radix, strNumber[i] > '9' ? strNumber[i] - 'A' + DEC_RADIX : strNumber[i] - '0');
-
-		result = (result * radix) + (strNumber[i] > '9' ? strNumber[i] - 'A' + DEC_RADIX : strNumber[i] - '0');
-		
+		result = SafeAdd(SafeMultiply(result, radix), DigitToInt(strNumber[i], radix));
 	}
 
 	return (strNumber[0] != '-') ? result : -result;
 
 }
 
-string ConvertIntToString(int number, int radix) 
+std::string ConvertIntToString(int number, int radix)
 {
-	ThrowExceptionForIncorrectNotation(radix);
+	ThrowOnIncorrectNotation(radix);
 
-	string result = "";
+	if (number == 0)
+	{
+		return "0";
+	}
+
+	std::string result = "";
 	bool signMinus = false;
 
 	if (number < 0)
@@ -88,7 +200,7 @@ string ConvertIntToString(int number, int radix)
 	
 	while (number > 0)
 	{
-		result.insert(result.begin(), (number % radix) >= DEC_RADIX ? (number % radix) + 'A' - DEC_RADIX : (number % radix) + '0');
+		result.insert(result.begin(), IntToDigit(number % radix, radix));
 		number = number / radix;
 	}
 
@@ -97,43 +209,23 @@ string ConvertIntToString(int number, int radix)
 		result.insert(result.begin(), '-');
 	}
 		
-	
 	return result;
 }
 
-void ThrowExceptionForIncorrectChar(char ch, int radix)
-{
-	if (!isdigit(ch) && ch != toupper(ch))
-	{
-		throw "Invalid argument";
-	}
-	
-	if (isdigit(ch) && ch - '0' > radix - 1)
-	{
-		throw "Invalid argument";
-	}
-
-	if (!isdigit(ch) && ch - 'A' + DEC_RADIX > radix - 1)
-	{
-		throw "Invalid argument";
-	}
-}
-
-void ThrowExceptionForIncorrectNotation(int radix)
+void ThrowOnIncorrectNotation(int radix)
 {
 	if (MIN_RADIX > radix || radix > MAX_RADIX)
 	{
-		throw "Invalid source or destonation notation";
+		throw std::invalid_argument("Invalid source or destonation notation");
 	}
 }
 
 
-string ConvertSourceToDestNotation(const string& value, int sourceNotation, int destinationNotation)
+std::string ConvertSourceToDestNotation(const std::string& value, int sourceNotation, int destinationNotation)
 {
 	int decValue = ConvertStringToInt(value, sourceNotation);
-	string result = ConvertIntToString(decValue, destinationNotation);
-
-	return result;
+	
+	return ConvertIntToString(decValue, destinationNotation);
 }
 
 int main(int argc, char* argv[])
@@ -143,14 +235,14 @@ int main(int argc, char* argv[])
 	{
 		Args args = ParseArgs(argc,argv);
 
-		cout << ConvertSourceToDestNotation(args.value, args.sourseNotation, args.destinationNotation) << endl;
+		std::cout << ConvertSourceToDestNotation(args.value, args.sourseNotation, args.destinationNotation) << std::endl;
 
 		return 0;
 
 	}
-	catch (const char* exception)
+	catch (const std::exception& exception)
 	{
-		cout << JoinExceptionString(exception);
+		std::cout << ConcatStringWithMessage(exception.what());
 
 		return 1;
 	}

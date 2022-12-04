@@ -3,50 +3,48 @@
 #include <string>
 #include <sstream>
 
-using namespace std;
-
 const int COUNT_MATRIX_ROWS = 3;
 const int COUNT_MATRIX_COLS = 3;
 
-typedef double Matrix3x3[3][3];
+typedef double Matrix3x3[COUNT_MATRIX_ROWS][COUNT_MATRIX_COLS];
 
-string JoinExceptionString(const string&);
-void ThrowExceptionForInvalidCountArgs(const int&);
-ifstream OpenInputFileStream(const string&);
-void GetMatrix3x3FromStream(Matrix3x3, ifstream&);
+std::string ConcatStringWithMessage(const std::string&);
+std::ifstream OpenInputFileStream(const std::string&);
+void ThrowOnInvalidCountArgs(const int);
+void GetMatrix3x3FromStream(Matrix3x3, std::ifstream&);
 void PrintMatrix3x3(Matrix3x3);
 void InvertMatrix3x3(Matrix3x3, Matrix3x3);
-void ThrowExceptionForWrongMatrix(ifstream&);
+void ThrowExceptionForWrongMatrix(std::ifstream&);
 
-ifstream OpenInputFileStream(const string& fileName)
+std::ifstream OpenInputFileStream(const std::string& fileName)
 {
-	ifstream input(fileName, ios::binary);
+	std::ifstream input(fileName, std::ios::binary);
 
 	if (!input.is_open())
 	{
-		throw "Failed to open <input file> for reading";
+		throw std::invalid_argument("Failed to open <input file> for reading");
 	}
 
 	return input;
 }
 
-void ThrowExceptionForInvalidCountArgs(const int& argc)
+void ThrowOnInvalidCountArgs(const int argc)
 {
 	if (argc != 2)
 	{
-		throw "Invalid argument count";
+		throw std::invalid_argument("Invalid argument count");
 	}
 }
 
-string JoinExceptionString(const string& exception)
+std::string ConcatStringWithMessage(const std::string& exception)
 {
 	return exception + '\n'
 		+ "Usage: invert.exe <matrix file1>" + '\n';
 }
 
-void ThrowExceptionForWrongMatrix(ifstream& input)
+void ThrowExceptionForWrongMatrix(std::ifstream& input)
 {
-	string line;
+	std::string line;
 	double temp;
 
 	int cols = 0;
@@ -54,7 +52,7 @@ void ThrowExceptionForWrongMatrix(ifstream& input)
 	
 	while (getline(input, line))
 	{
-		istringstream lineStream(line);
+		std::istringstream lineStream(line);
 		
 		cols = 0;	
 		
@@ -64,7 +62,7 @@ void ThrowExceptionForWrongMatrix(ifstream& input)
 			
 			if (cols > 3 || rows > 3)
 			{
-				throw "Invalid input matrix";
+				throw std::invalid_argument("Invalid input matrix");
 			}
 		}
 
@@ -72,10 +70,10 @@ void ThrowExceptionForWrongMatrix(ifstream& input)
 	}
 	
 	input.clear();
-	input.seekg(0, ios::beg);
+	input.seekg(0, std::ios::beg);
 }
 
-void GetMatrix3x3FromStream(Matrix3x3 destonationMatrix, ifstream& input)
+void GetMatrix3x3FromStream(Matrix3x3 destonationMatrix, std::ifstream& input)
 {
 	ThrowExceptionForWrongMatrix(input);
 
@@ -91,7 +89,7 @@ void GetMatrix3x3FromStream(Matrix3x3 destonationMatrix, ifstream& input)
 			}
 			else
 			{
-				throw "Invalid input matrix";
+				throw std::invalid_argument("Invalid input matrix");
 			}
 		}
 	}
@@ -100,19 +98,19 @@ void GetMatrix3x3FromStream(Matrix3x3 destonationMatrix, ifstream& input)
 
 void PrintMatrix3x3(Matrix3x3 matrix)
 {
-	cout.setf(ios::fixed);
-	cout.precision(3);
+	std::cout.setf(std::ios::fixed);
+	std::cout.precision(3);
 
 	for (int i = 0; i < COUNT_MATRIX_ROWS; i++)
 	{
 		for (int j = 0; j < COUNT_MATRIX_COLS; j++)
 		{
-			cout << matrix[i][j] << "\t";
+			std::cout << matrix[i][j] << "\t";
 		}
-		cout << endl;
+		std::cout << std::endl;
 	}
 
-	cout.unsetf(ios::fixed);
+	std::cout.unsetf(std::ios::fixed);
 }
 
 void InvertMatrix3x3(Matrix3x3 matrix1, Matrix3x3 result)
@@ -131,25 +129,24 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		ThrowExceptionForInvalidCountArgs(argc);
+		ThrowOnInvalidCountArgs(argc);
 
-		ifstream input = OpenInputFileStream(argv[1]);
+		std::ifstream input = OpenInputFileStream(argv[1]);
 
 		Matrix3x3 matrix1 = {};
-		
 		GetMatrix3x3FromStream(matrix1, input);
 
 		Matrix3x3 result = {};
-
 		InvertMatrix3x3(matrix1, result);
 
 		PrintMatrix3x3(result);
 		
 		return 0;
 	}
-	catch (const char* exception)
+	catch (const std::exception& exception)
 	{
-		cout << JoinExceptionString(exception);
+		std::cout << ConcatStringWithMessage(exception.what());
+
 		return 1;
 	}
 
