@@ -60,7 +60,7 @@ void ThrowExceptionForWrongMatrix(std::ifstream& input)
 		{
 			cols++;
 			
-			if (cols > 3 || rows > 3)
+			if (cols > COUNT_MATRIX_COLS || rows > COUNT_MATRIX_ROWS)
 			{
 				throw std::invalid_argument("Invalid input matrix");
 			}
@@ -68,7 +68,6 @@ void ThrowExceptionForWrongMatrix(std::ifstream& input)
 
 		rows++;
 	}
-	
 	input.clear();
 	input.seekg(0, std::ios::beg);
 }
@@ -93,7 +92,6 @@ void GetMatrix3x3FromStream(Matrix3x3 destonationMatrix, std::ifstream& input)
 			}
 		}
 	}
-
 }
 
 void PrintMatrix3x3(Matrix3x3 matrix)
@@ -126,7 +124,6 @@ void InvertMatrix3x3(Matrix3x3 matrix1, Matrix3x3 result)
 
 int main(int argc, char* argv[])
 {
-
 	try
 	{
 		ThrowOnInvalidCountArgs(argc);

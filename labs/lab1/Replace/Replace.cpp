@@ -112,7 +112,6 @@ void CopyFileWithReplacement(const string& inputFileName, const string& outputFi
 {
 	ifstream input = OpenInputFileStream(inputFileName);
 	
-
 	ofstream output = OpenOutputFileStream(outputFileName);
 	
 	string line;
@@ -131,7 +130,6 @@ void CopyFileWithReplacement(const string& inputFileName, const string& outputFi
 
 int main(int argc, char* argv[])
 {
-
 	try
 	{
 		Args args = ParseArgs(argc, argv);
