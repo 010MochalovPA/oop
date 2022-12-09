@@ -2,11 +2,15 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-
+#include <array>
+#include <optional>
+//матрица не транспонмированная
 const int COUNT_MATRIX_ROWS = 3;
 const int COUNT_MATRIX_COLS = 3;
 
 typedef double Matrix3x3[COUNT_MATRIX_ROWS][COUNT_MATRIX_COLS];
+
+using Mat3x3 = std::array<std::array<double, COUNT_MATRIX_COLS>, COUNT_MATRIX_ROWS>;
 
 std::string ConcatStringWithMessage(const std::string&);
 std::ifstream OpenInputFileStream(const std::string&);
@@ -15,6 +19,32 @@ void GetMatrix3x3FromStream(Matrix3x3, std::ifstream&);
 void PrintMatrix3x3(Matrix3x3);
 void InvertMatrix3x3(Matrix3x3, Matrix3x3);
 void ThrowExceptionForWrongMatrix(std::ifstream&);
+
+std::optional<Mat3x3> GetMatrix3x3FromStream(std::istream& input)
+{
+	if (true)
+	{
+		Mat3x3 value;
+		return value;
+	}
+	else
+	{
+		return std::nullopt;
+	}
+}
+
+std::optional<Mat3x3> InvertMatrix(const Matrix3x3& matrix)
+{
+	std::optional<Mat3x3> m;
+	if (m) // либо m.has_value()
+	{
+		(*m)[1][2] = 3;
+	}
+	else
+	{
+		// optional пуст и обращаться к содержимому нельзя
+	}
+}
 
 std::ifstream OpenInputFileStream(const std::string& fileName)
 {
@@ -72,6 +102,7 @@ void ThrowExceptionForWrongMatrix(std::ifstream& input)
 	input.seekg(0, std::ios::beg);
 }
 
+// лучше зависеть от istream a не ifstream
 void GetMatrix3x3FromStream(Matrix3x3 destonationMatrix, std::ifstream& input)
 {
 	ThrowExceptionForWrongMatrix(input);
@@ -128,6 +159,7 @@ int main(int argc, char* argv[])
 	{
 		ThrowOnInvalidCountArgs(argc);
 
+		// Лучше сделать функцию загружающую матрицу из файла с указанным именем
 		std::ifstream input = OpenInputFileStream(argv[1]);
 
 		Matrix3x3 matrix1 = {};

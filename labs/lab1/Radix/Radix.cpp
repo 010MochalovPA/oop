@@ -24,7 +24,7 @@ void ThrowOnOverflowOnAddition(int, int);
 void ThrowOnOverflowOnMultiply(int, int);
 std::string ConvertIntToString(int, int /*radix*/);
 std::string ConvertSourceToDestNotation(const std::string& /*value*/, int /*sourceNotation*/, int /*destinationNotation*/);
-std::string ConcatStringWithMessage(const std::string&);
+std::string ConcatStringWithMessageUsage(const std::string&);
 Args ParseArgs(const int, char*[]);
 
 //argc принимать по значению
@@ -64,11 +64,12 @@ void ThrowOnOverflowOnAddition(int a, int b)
 	}
 }
 
-void ThrowOnIncorrectDigitNotation(char ch, int radix) 
+// Функция пропускает цифры, равные основанию системы счисления, Например в двоичной системе пропустит 2, а в 16-й - G
+void ThrowOnIncorrectDigitNotation(char ch, int radix)
 {
 	if (ch > '9')
 	{
-		if (ch < 'A' || ch > 'A' + radix - DEC_RADIX)
+		if (ch < 'A' || ch > 'A' + radix - DEC_RADIX - 1)
 		{
 			throw std::invalid_argument("Invalid argument");
 		}
@@ -107,19 +108,44 @@ void ThrowOnOverflowOnMultiply(int a, int b)
 
 int SafeAdd(int a, int b)
 {
-	// TODO: check for overflow
-	ThrowOnOverflowOnAddition(a, b);
+	if (b > 0 && a > (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (b < 0 && a < (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
 	return a + b;
 }
 
 int SafeMultiply(int a, int b)
 {
-	ThrowOnOverflowOnMultiply(a, b);
+	if (a > 0 && b > 0 && a > (INT_MAX / b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a > 0 && b < 0 && b < (INT_MIN / a))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b > 0 && a < (INT_MIN / b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b < 0 && b < (INT_MAX / a))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
 	return a * b;
 }
 
 // Название функции не должно зависеть от контекста её использования, если тело не зависит
-std::string ConcatStringWithMessage(const std::string& string)
+std::string ConcatStringWithMessageUsage(const std::string& string)
 {
 	return string + '\n'
 		+ "Usage: radix.exe <source notation> <destination notation> <value>" + '\n';
@@ -139,6 +165,7 @@ int DigitToInt(char ch, int radix)
 	return ch - '0';
 }
 
+// не понятно, что передавать в параметр a
 char IntToDigit(int a, int radix)
 {
 	if (a > 9)
@@ -179,7 +206,7 @@ int ConvertStringToInt(const std::string& strNumber, int radix)
 	return (strNumber[0] != '-') ? result : -result;
 
 }
-
+// Программа не пропускает число INT_MIN
 std::string ConvertIntToString(int number, int radix)
 {
 	ThrowOnIncorrectNotation(radix);
@@ -194,6 +221,7 @@ std::string ConvertIntToString(int number, int radix)
 
 	if (number < 0)
 	{
+		// Возможно переполнение при number = INT_MIN
 		number = -number;
 		signMinus = true;		
 	}
@@ -242,7 +270,7 @@ int main(int argc, char* argv[])
 	}
 	catch (const std::exception& exception)
 	{
-		std::cout << ConcatStringWithMessage(exception.what());
+		std::cout << ConcatStringWithMessageUsage(exception.what());
 
 		return 1;
 	}

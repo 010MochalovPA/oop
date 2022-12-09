@@ -1,35 +1,64 @@
 ﻿#include <iostream>
 #include <string>
 
-using namespace std;
-
 const unsigned int RADIX = 10;
-const unsigned int MAX_INT = numeric_limits<unsigned int>::max();
 const unsigned int COUNT_BITS_IN_BYTE = 8;
 
-string JoinExceptionString(const string&);
-void ThrowExceptionForNonNumericValue(const string&);
+std::string ConcatStringWithMessage(const std::string&);
+void ThrowExceptionForNonNumericValue(const std::string&);
 void ThrowExceptionForInvalidSize(int);
-void ThrowExceptionForInvalidCountArgs(const int&);
+void ThrowExceptionForInvalidCountArgs(const int);
 void ThrowExceptionForOverflowInt(unsigned int, unsigned int);
-int ConvertStringToInt(const string&);
+int ConvertStringToInt(const std::string&);
 int FlipByte(int b);
+int SafeMultiply(int a, int b);
+int SafeAdd(int a, int b);
 
-string JoinExceptionString(const string& exception)
+std::string ConcatStringWithMessage(const std::string& exception)
 {
 	return exception + '\n'
 		+ "Usage: flipbyte.exe <byte>" + '\n';
 }
 
-void ThrowExceptionForOverflowInt(unsigned int a, unsigned int b)
+int SafeMultiply(int a, int b)
 {
-	if (MAX_INT - a < b)
+	if (a > 0 && b > 0 && a > (INT_MAX / b))
 	{
-		throw "Invalid argument";
+		throw std::overflow_error("Invalid argument");
 	}
+
+	if (a > 0 && b < 0 && b < (INT_MIN / a))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b > 0 && a < (INT_MIN / b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b < 0 && b < (INT_MAX / a))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+	return a * b;
 }
 
-int ConvertStringToInt(const string& value)
+int SafeAdd(int a, int b)
+{
+	if (b > 0 && a > (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (b < 0 && a < (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+	return a + b;
+}
+
+int ConvertStringToInt(const std::string& value)
 {
 	ThrowExceptionForNonNumericValue(value);
 
@@ -37,29 +66,27 @@ int ConvertStringToInt(const string& value)
 
 	for (char ch : value)
 	{
-		ThrowExceptionForOverflowInt(result * RADIX, ch - '0');
-
-		result = (result * RADIX) + ch - '0';
+		result = SafeAdd(SafeMultiply(result,RADIX), ch - '0');
 	}
 
 	return result;
 }
 
-void ThrowExceptionForInvalidCountArgs(const int& argc)
+void ThrowExceptionForInvalidCountArgs(const int argc)
 {
 	if (argc != 2)
 	{
-		throw "Invalid argument count";
+		throw std::invalid_argument("Invalid argument count");
 	}
 }
 
-void ThrowExceptionForNonNumericValue(const string& value)
+void ThrowExceptionForNonNumericValue(const std::string& value)
 {
 	for (char ch : value)
 	{
 		if (!isdigit(ch))
 		{
-			throw "Invalid argument";
+			throw std::invalid_argument("Invalid argument");
 		}
 	}
 }
@@ -68,7 +95,7 @@ void ThrowExceptionForInvalidSize(int number)
 {
 	if (number >> COUNT_BITS_IN_BYTE != 0)
 	{
-		throw "Argument <byte> exceeds 1 byte";
+		throw std::invalid_argument("Argument <byte> exceeds 1 byte");
 	}
 }
 
@@ -89,20 +116,19 @@ int FlipByte(int byte)
 
 int main(int argc, char* argv[])
 {
-
 	try
 	{
 		ThrowExceptionForInvalidCountArgs(argc);
 
 		int number = ConvertStringToInt(argv[1]);
 
-		cout << FlipByte(number);
+		std::cout << FlipByte(number) << std::endl;
 
 		return 0;
 	}
-	catch (const char* exception)
+	catch (const std::exception& exception)
 	{
-		cout << JoinExceptionString(exception);
+		std::cout << ConcatStringWithMessage(exception.what());
 
 		return 1;
 	}

@@ -2,21 +2,19 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
-
 struct Args
 {
-	string inputFileName;
-	string outputFileName;
-	string searchString;
-	string replaceString;
+	std::string inputFileName;
+	std::string outputFileName;
+	std::string searchString;
+	std::string replaceString;
 };
 
-string ReplaceString(const string& subject,
-	const string& searchString, const string& replacementString);
+std::string ReplaceString(const std::string& subject,
+	const std::string& searchString, const std::string& replacementString);
 
-void CopyFileWithReplacement(const string& inputFileName, const string& outputFileName,
-	const string& searchString, const string& replacementString);
+void CopyFileWithReplacement(const std::string& inputFileName, const std::string& outputFileName,
+	const std::string& searchString, const std::string& replacementString);
 
 Args ParseArgs(const int, char*[]);
 std::ifstream OpenInputFileStream(const std::string&);
@@ -40,7 +38,7 @@ Args ParseArgs(const int argc, char* argv[])
 
 std::ifstream OpenInputFileStream(const std::string& fileName)
 {
-	std::ifstream input(fileName, std::ios::binary);
+	std::ifstream input(fileName);
 
 	if (!input.is_open())
 	{
@@ -52,7 +50,7 @@ std::ifstream OpenInputFileStream(const std::string& fileName)
 
 std::ofstream OpenOutputFileStream(const std::string& fileName)
 {
-	std::ofstream output(fileName, std::ios::binary);
+	std::ofstream output(fileName);
 
 	if (!output.is_open())
 	{
@@ -70,8 +68,8 @@ std::string ConcatStringWithMessage(const std::string& string)
 
 // Возвращает результат замены всех вхождения строки searchString внутри строки subject на replacementString
 // Если строка searchString пустая, то возвращается subject
-string ReplaceString(const string& subject,
-	const string& searchString, const string& replacementString)
+std::string ReplaceString(const std::string& subject,
+	const std::string& searchString, const std::string& replacementString)
 {
 	// Эта функция написана не до конца. Напишите недостающий код самостоятельно
 
@@ -79,7 +77,7 @@ string ReplaceString(const string& subject,
 	// Результат будет записан в новую строку result, оставляя строку subject неизменной
 	// Какие преимущества есть у этого способа по сравнению с алгоритмом, выполняющим
 	// замену прямо в строке subject?
-	string result;
+	std::string result;
 
 	if (searchString.length() == 0)
 	{
@@ -92,7 +90,7 @@ string ReplaceString(const string& subject,
 		size_t foundPos = subject.find(searchString, position);
 
 		// В результирующую строку записываем текст из диапазона [pos,foundPos)
-		if (foundPos != string::npos)
+		if (foundPos != std::string::npos)
 		{
 			result.append(subject, position, foundPos - position).append(replacementString);
 			position = searchString.length() + foundPos;
@@ -107,21 +105,20 @@ string ReplaceString(const string& subject,
 	return result;
 }
 
-void CopyFileWithReplacement(const string& inputFileName, const string& outputFileName,
-	const string& searchString, const string& replacementString)
+void CopyFileWithReplacement(const std::string& inputFileName, const std::string& outputFileName,
+	const std::string& searchString, const std::string& replacementString)
 {
-	ifstream input = OpenInputFileStream(inputFileName);
+	std::ifstream input = OpenInputFileStream(inputFileName);
+	std::ofstream output = OpenOutputFileStream(outputFileName);
 	
-	ofstream output = OpenOutputFileStream(outputFileName);
-	
-	string line;
-	string result;
+	std::string line;
+	std::string result;
 
 	while (getline(input, line))
 	{
-		output << ReplaceString(line, searchString, replacementString) << endl;
+		output << ReplaceString(line, searchString, replacementString) << std::endl;
 
-		if (!output.flush()) // Если не удалось сбросить данные на диск
+		if (!output.flush())
 		{
 			throw std::exception("Failed to save data on disk");
 		}	

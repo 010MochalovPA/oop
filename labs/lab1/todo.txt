@@ -1,0 +1,8 @@
+Radix - при MIN_INT ошибка
+Invert - не правильное инвертирование матрицы
+
+Replace + 80
+Radix 0.6 + 60
+CopyFile + 20
+Dec2Bin 20
+
