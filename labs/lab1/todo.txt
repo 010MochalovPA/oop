@@ -1,8 +1,10 @@
 Radix - при MIN_INT ошибка
-Invert - не правильное инвертирование матрицы
+Invert - не правильное инвертирование матрицы (исправил)
 
 Replace + 80
 Radix 0.6 + 60
 CopyFile + 20
 Dec2Bin 20
+Invert ?
+labyrinth ?
 

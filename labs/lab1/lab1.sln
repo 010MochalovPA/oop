@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Radix", "Radix\Radix.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rotatebyte", "Rotatebyte\Rotatebyte.vcxproj", "{EC70D30F-953A-4A9C-9681-170721D6CA26}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Labyrinth", "Labyrinth\Labyrinth.vcxproj", "{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -149,6 +151,14 @@ Global
 		{EC70D30F-953A-4A9C-9681-170721D6CA26}.Release|Win32.Build.0 = Release|Win32
 		{EC70D30F-953A-4A9C-9681-170721D6CA26}.Release|x64.ActiveCfg = Release|x64
 		{EC70D30F-953A-4A9C-9681-170721D6CA26}.Release|x64.Build.0 = Release|x64
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Debug|Win32.Build.0 = Debug|Win32
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Debug|x64.ActiveCfg = Debug|x64
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Debug|x64.Build.0 = Debug|x64
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Release|Win32.ActiveCfg = Release|Win32
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Release|Win32.Build.0 = Release|Win32
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Release|x64.ActiveCfg = Release|x64
+		{7FBB6972-3ED2-40AA-86D8-7B31DDB9B27B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
