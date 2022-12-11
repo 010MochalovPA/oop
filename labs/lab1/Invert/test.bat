@@ -27,13 +27,27 @@ if NOT ERRORLEVEL 1 goto err
 fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-input-matrix.txt
 if ERRORLEVEL 1 goto err
 
+
+
 rem проверяем корректные данные
 echo test matrix1.txt
 %PROGRAM% %PATH_TEST%\matrix1.txt > %TEMP%\output.txt
 if ERRORLEVEL 1 goto err
-fc.exe %TEMP%\output.txt %PATH_TEST%\correct-invert-matrix.txt
+fc.exe %TEMP%\output.txt %PATH_TEST%\correct-invert-matrix1.txt
 if ERRORLEVEL 1 goto err
 
+echo test matrix2.txt
+%PROGRAM% %PATH_TEST%\matrix2.txt > %TEMP%\output.txt
+if ERRORLEVEL 1 goto err
+fc.exe %TEMP%\output.txt %PATH_TEST%\correct-invert-matrix2.txt
+if ERRORLEVEL 1 goto err
+
+rem проверяем матрицу c определителем 0
+echo test matrix3.txt
+%PROGRAM% %PATH_TEST%\matrix3.txt > %TEMP%\output.txt
+if NOT ERRORLEVEL 1 goto err
+fc.exe %TEMP%\output.txt %PATH_TEST%\determinate0.txt
+if ERRORLEVEL 1 goto err
 echo Program testing succeeded
 exit 0
 
