@@ -5,32 +5,31 @@
 #include <array>
 #include <optional>
 
-//матрица не транспонмированная
 const int COUNT_MATRIX_ROWS = 3;
 const int COUNT_MATRIX_COLS = 3;
 
 const int COUNT_MINOR_MATRIX_ROWS = 2;
 const int COUNT_MINOR_MATRIX_COLS = 2;
-
+// всегда возвращает optional
 using Matrix3x3 = std::array<std::array<double, COUNT_MATRIX_COLS>, COUNT_MATRIX_ROWS>;
 using Matrix2x2 = std::array<std::array<double, COUNT_MINOR_MATRIX_COLS>, COUNT_MINOR_MATRIX_ROWS>;
 
-std::optional<Matrix3x3> GetMatrix3x3FromFile(const std::string& fileName);
+Matrix3x3 GetMatrix3x3FromFile(const std::string& fileName);
 void PrintMatrix3x3(const Matrix3x3& matrix);
 void ThrowExceptionForWrongMatrix(std::ifstream& input);
 double GetDeterminantMatrix2x2(const Matrix2x2& matrix);
 double GetDeterminantMatrix3x3(const Matrix3x3& matrix);
 std::string ConcatStringWithMessage(const std::string& exception);
-std::optional<Matrix3x3> GetTranspositionMatrix3x3(const Matrix3x3& matrix);
-std::optional<Matrix2x2> GetMinorMatrixForElement(int rowMinor, int colMinor, const Matrix3x3& matrix);
-std::optional<Matrix3x3> GetComplementMatrix3x3(const Matrix3x3& matrix);
-std::optional<Matrix3x3> MultiMatrix3x3AndNumber(const Matrix3x3& matrix, double number);
-std::optional<Matrix3x3> InvertMatrix(const Matrix3x3& matrix);
-
+Matrix3x3 GetTranspositionMatrix3x3(const Matrix3x3& matrix);
+Matrix2x2 GetMinorMatrixForElement(const Matrix3x3& matrix, int rowMinor, int colMinor);
+Matrix3x3 GetComplementMatrix3x3(const Matrix3x3& matrix);
+Matrix3x3 MultiMatrix3x3AndNumber(const Matrix3x3& matrix, double number);
+Matrix3x3 InvertMatrix(const Matrix3x3& matrix);
+//не надо выносить в отдельную функцию
 void ThrowExceptionForWrongMatrix(std::ifstream& input)
 {
 	std::string line;
-	double temp;
+	double value;
 
 	int cols = 0;
 	int rows = 0;
@@ -41,7 +40,7 @@ void ThrowExceptionForWrongMatrix(std::ifstream& input)
 
 		cols = 0;
 
-		while (lineStream >> temp)
+		while (lineStream >> value)
 		{
 			cols++;
 
@@ -78,7 +77,7 @@ double GetDeterminantMatrix2x2(const Matrix2x2& matrix)
 	return (matrix[0][0] * matrix[1][1]) - matrix[0][1] * matrix[1][0];
 }
 
-std::optional<Matrix3x3> GetMatrix3x3FromFile(const std::string& fileName)
+Matrix3x3 GetMatrix3x3FromFile(const std::string& fileName)
 {
 	std::ifstream input;
 	input.open(fileName);
@@ -109,8 +108,7 @@ std::optional<Matrix3x3> GetMatrix3x3FromFile(const std::string& fileName)
 		}
 	}
 
-	return { matrix };
-	
+	return matrix;
 }
 
 void PrintMatrix3x3(const Matrix3x3& matrix)
@@ -130,7 +128,7 @@ void PrintMatrix3x3(const Matrix3x3& matrix)
 	std::cout.unsetf(std::ios::fixed);
 }
 
-std::optional<Matrix3x3> GetTranspositionMatrix3x3(const Matrix3x3& matrix)
+Matrix3x3 GetTranspositionMatrix3x3(const Matrix3x3& matrix)
 {
 	Matrix3x3 result;
 	for (int i = 0; i < COUNT_MATRIX_ROWS; i++)
@@ -140,10 +138,10 @@ std::optional<Matrix3x3> GetTranspositionMatrix3x3(const Matrix3x3& matrix)
 			result[i][j] = matrix[j][i];
 		}
 	}
-	return { result };
+	return result;
 }
 
-std::optional<Matrix2x2> GetMinorMatrixForElement(int rowMinor, int colMinor, const Matrix3x3& matrix)
+Matrix2x2 GetMinorMatrixForElement(const Matrix3x3& matrix, int rowMinor, int colMinor)
 {
 	Matrix2x2 minor;
 
@@ -170,10 +168,10 @@ std::optional<Matrix2x2> GetMinorMatrixForElement(int rowMinor, int colMinor, co
 		}
 	}
 
-	return { minor };
+	return minor;
 }
 
-std::optional<Matrix3x3> GetComplementMatrix3x3(const Matrix3x3& matrix)
+Matrix3x3 GetComplementMatrix3x3(const Matrix3x3& matrix)
 {
 	Matrix3x3 result;
 
@@ -181,14 +179,9 @@ std::optional<Matrix3x3> GetComplementMatrix3x3(const Matrix3x3& matrix)
 	{
 		for (int j = 0; j < COUNT_MATRIX_COLS; j++)
 		{
-			std::optional<Matrix2x2> minorMatrix = GetMinorMatrixForElement(i, j, matrix);
-			
-			if (!minorMatrix.has_value())
-			{
-				throw std::exception("Incorrect matrix! Matrix cannot be inverted!");
-			}
-
-			result[i][j] = GetDeterminantMatrix2x2(minorMatrix.value());
+			Matrix2x2 minorMatrix = GetMinorMatrixForElement(matrix, i, j);
+			//главное слово в конце
+			result[i][j] = GetDeterminantMatrix2x2(minorMatrix);
 		}
 	}
 
@@ -197,10 +190,10 @@ std::optional<Matrix3x3> GetComplementMatrix3x3(const Matrix3x3& matrix)
 	result[1][2] = -result[1][2];
 	result[2][1] = -result[2][1];
 
-	return { result };
+	return result;
 }
 
-std::optional<Matrix3x3> MultiMatrix3x3AndNumber(const Matrix3x3& matrix, double number) 
+Matrix3x3 MultiMatrix3x3AndNumber(const Matrix3x3& matrix, double number) 
 {
 	Matrix3x3 result;
 
@@ -212,38 +205,24 @@ std::optional<Matrix3x3> MultiMatrix3x3AndNumber(const Matrix3x3& matrix, double
 		}
 	}
 
-	return { result };
+	return result;
 }
 
-std::optional<Matrix3x3> InvertMatrix(const Matrix3x3& matrix) 
+Matrix3x3 InvertMatrix(const Matrix3x3& matrix) 
 {
 	double determinant = GetDeterminantMatrix3x3(matrix);
 
 	if (determinant == 0)
 	{
-		throw std::exception("Determinant is 0! Matrix cannot be inverted!");
+		//нет конструктора принимающего строку
+		throw std::domain_error("Determinant is 0! Matrix cannot be inverted!");
 	}
 
-	std::optional<Matrix3x3> complimentMatrix = GetComplementMatrix3x3(matrix);
+	Matrix3x3 complimentMatrix = GetComplementMatrix3x3(matrix);
 
-	if (!complimentMatrix.has_value())
-	{
-		throw std::exception("Incorrect matrix! Matrix cannot be inverted!");
-	}
+	Matrix3x3 transpositedMatrix = GetTranspositionMatrix3x3(complimentMatrix);
 
-	std::optional<Matrix3x3> transpositedMatrix = GetTranspositionMatrix3x3(complimentMatrix.value());
-
-	if (!transpositedMatrix.has_value())
-	{
-		throw std::exception("Incorrect matrix! Matrix cannot be inverted!");
-	}
-
-	std::optional<Matrix3x3> invertMatrix = MultiMatrix3x3AndNumber(transpositedMatrix.value(), 1 / (determinant));
-
-	if (!invertMatrix.has_value())
-	{
-		throw std::exception("Incorrect matrix! Matrix cannot be inverted!");
-	}
+	Matrix3x3 invertMatrix = MultiMatrix3x3AndNumber(transpositedMatrix, 1 / (determinant));
 
 	return invertMatrix;
 }
@@ -259,12 +238,12 @@ int main(int argc, char* argv[])
 		}
 
 		std::string fileName = argv[1];
+		//не возвращать optional если не проверяю исключения
+		Matrix3x3 matrix = GetMatrix3x3FromFile(fileName);
 
-		std::optional<Matrix3x3> matrix = GetMatrix3x3FromFile(fileName);
+		Matrix3x3 result = InvertMatrix(matrix);
 
-		std::optional<Matrix3x3> result = InvertMatrix(matrix.value());
-
-		PrintMatrix3x3(result.value());
+		PrintMatrix3x3(result);
 		
 		return 0;
 	}

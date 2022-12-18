@@ -165,7 +165,6 @@ int DigitToInt(char ch, int radix)
 	return ch - '0';
 }
 
-// не понятно, что передавать в параметр a
 char IntToDigit(int a, int radix)
 {
 	if (a > 9)

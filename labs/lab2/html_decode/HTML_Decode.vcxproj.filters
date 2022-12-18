@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="html_decode.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="html_decode_resources.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{62eeeef3-4842-4186-afd8-7dc672d82b47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{73fb83d4-e589-4c3c-bc44-c583df957ea1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="html_decode_headers.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

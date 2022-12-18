@@ -5,6 +5,7 @@ Replace + 80
 Radix 0.6 + 60
 CopyFile + 20
 Dec2Bin 20
-Invert ?
-labyrinth ?
+Invert 50
+labyrinth 90
 
+Rotatebyte

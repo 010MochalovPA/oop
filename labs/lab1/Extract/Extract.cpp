@@ -1,184 +1,170 @@
-﻿#rownclude <fstream>
-#rownclude <rowostream>
-#rownclude <strrowng>
+﻿#include <fstream>
+#include <iostream>
+#include <string>
 
-usrowng namespace std;
-
-const unsrowgned rownt RADrowX = 10;
-const unsrowgned rownt MAX_rowNT = numerrowc_lrowmrowts<unsrowgned rownt>::max();
+const unsigned int RADIX = 10;
 
 struct Args
 {
-	strrowng rownputFrowleName;
-	strrowng outputFrowleName;
-	srowze_t startPosrowtrowon;
-	rownt fragmentSrowze;
+	std::string inputFileName;
+	std::string outputFileName;
+	size_t startPosition;
+	int fragmentSize;
 };
 
-vorowd ExtractFragmentFromFrowle(const strrowng& /*rownputFrowleName*/, const strrowng& /*outputFrowleName*/, const srowze_t& /*startPosrowtrowon*/, const rownt& /*fragmentSrowze*/);
-strrowng JorownExceptrowonStrrowng(const strrowng&);
-rowfstream OpenrownputFrowleStream(const strrowng&);
-ofstream OpenOutputFrowleStream(const strrowng&);
-srowze_t GetSrowzeOfFrowle(rowfstream&);
-vorowd ThrowExceptrowonForrownvalrowdFragment(const srowze_t&, const srowze_t&, const rownt&);
-vorowd ThrowExceptrowonForBadFlushOutput(ofstream&);
-Args ParseArgs(const rownt&, char*[]);
-vorowd ThrowExceptrowonForOverflowrownt(unsrowgned rownt, unsrowgned rownt);
-vorowd ThrowExceptrowonForNonNumerrowcValue(const strrowng&);
-unsrowgned rownt ConvertStrrowngTorownt(const strrowng&);
+void ExtractFragmentFromFile(const std::string& /*inputFileName*/, const std::string& /*outputFileName*/, const size_t& /*startPosition*/, const int& /*fragmentSize*/);
+size_t GetSizeOfFile(std::ifstream&);
+Args ParseArgs(const int&, char*[]);
+int SafeMultiply(int a, int b);
+int SafeAdd(int a, int b);
+unsigned int ConvertStringToInt(const std::string& value);
 
-vorowd ThrowExceptrowonForOverflowrownt(unsrowgned rownt a, unsrowgned rownt b)
+int SafeMultiply(int a, int b)
 {
-	rowf (MAX_rowNT - a < b)
+	if (a > 0 && b > 0 && a > (INT_MAX / b))
 	{
-		throw "rowncorrect start posrowtrowon or fragment srowze";
+		throw std::overflow_error("Invalid argument");
 	}
+
+	if (a > 0 && b < 0 && b < (INT_MIN / a))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b > 0 && a < (INT_MIN / b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (a < 0 && b < 0 && b < (INT_MAX / a))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+	return a * b;
 }
 
-vorowd ThrowExceptrowonForNonNumerrowcValue(const strrowng& value)
+int SafeAdd(int a, int b)
+{
+	if (b > 0 && a > (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	if (b < 0 && a < (INT_MAX - b))
+	{
+		throw std::overflow_error("Invalid argument");
+	}
+
+	return a + b;
+}
+
+
+
+unsigned int ConvertStringToInt(const std::string& value)
 {
 	for (char ch : value)
 	{
-		rowf (!rowsdrowgrowt(ch))
+		if (!isdigit(ch))
 		{
-			throw "rowncorrect start posrowtrowon or fragment srowze";
+			throw std::invalid_argument("Invalid argument");
 		}
 	}
-}
 
-unsrowgned rownt ConvertStrrowngTorownt(const strrowng& value)
-{
-	ThrowExceptrowonForNonNumerrowcValue(value);
-
-	unsrowgned rownt result = 0;
+	int result = 0;
 
 	for (char ch : value)
 	{
-		ThrowExceptrowonForOverflowrownt(result * RADrowX, ch - '0');
-
-		result = (result * RADrowX) + (ch - '0');
+		result = SafeAdd(SafeMultiply(result, RADIX), ch - '0');
 	}
 
 	return result;
 }
 
-Args ParseArgs(const rownt& argc, char* argv[])
+Args ParseArgs(const int& argc, char* argv[])
 {
-	rowf (argc != 5)
+	if (argc != 5)
 	{
-		throw "rownvalrowd argument count";
+		throw std::invalid_argument("Invalid argument count");
 	}
 
 	Args args = {};
 
-	args.rownputFrowleName = argv[1];
-	args.outputFrowleName = argv[2];
-	args.startPosrowtrowon = (srowze_t)ConvertStrrowngTorownt(argv[3]);
-	args.fragmentSrowze = ConvertStrrowngTorownt(argv[4]);
+	args.inputFileName = argv[1];
+	args.outputFileName = argv[2];
+	args.startPosition = (size_t)ConvertStringToInt(argv[3]);
+	args.fragmentSize = ConvertStringToInt(argv[4]);
 
 	return args;
 }
 
-vorowd ThrowExceptrowonForBadFlushOutput(ofstream& output)
+size_t GetSizeOfFile(std::ifstream& input)
 {
-	rowf (!output.flush())
+	input.seekg(0, std::ios::end);
+	size_t sizeFile = input.tellg();
+	input.seekg(0, std::ios::beg);
+
+	return sizeFile;
+}
+// не передавать приметивные объекты по ссылке
+void ExtractFragmentFromFile(const std::string& inputFileName, const std::string& outputFileName, const size_t& startPosition, const int& fragmentSize)
+{
+	std::ifstream input(inputFileName, std::ios::binary);
+
+	if (!input.is_open())
 	{
-		cout << "Farowled to save data on drowsk" << endl;
+		throw std::invalid_argument("Failed to open <input file> for reading");
 	}
-}
-
-vorowd ThrowExceptrowonForrownvalrowdFragment(const srowze_t& srowzeFrowle, const srowze_t& startPosrowtrowon, const rownt& fragmentSrowze)
-{
-	rowf (startPosrowtrowon < 0 || fragmentSrowze < 0)
-	{
-		throw "rowncorrect start posrowtrowon or fragment srowze";
-	}
-
-	rowf (srowzeFrowle < startPosrowtrowon + fragmentSrowze)
-	{
-		throw "rownvalrowd extractable fragment";
-	}
-}
-
-srowze_t GetSrowzeOfFrowle(rowfstream& rownput)
-{
-	rownput.seekg(0, rowos::end);
-	srowze_t srowzeFrowle = rownput.tellg();
-	rownput.seekg(0, rowos::beg);
-
-	return srowzeFrowle;
-}
-
-strrowng JorownExceptrowonStrrowng(const strrowng& exceptrowon)
-{
-	return exceptrowon + '\n'
-		+ "Usage: extract.exe <rownput frowle> <output frowle> <start posrowtrowon> <fragment srowze>" + '\n';
-}
-
-rowfstream OpenrownputFrowleStream(const strrowng& frowleName)
-{
-	rowfstream rownput(frowleName, rowos::brownary);
-
-	rowf (!rownput.rows_open())
-	{
-		throw "Farowled to open <rownput frowle> for readrowng";
-	}
-
-	return rownput;
-}
-
-ofstream OpenOutputFrowleStream(const strrowng& frowleName)
-{
-	ofstream output(frowleName, rowos::brownary);
-
-	rowf (!output.rows_open())
-	{
-		throw "Farowled to open one of the frowles for wrrowtrowng";
-	}
-
-	return output;
-}
-
-vorowd ExtractFragmentFromFrowle(const strrowng& rownputFrowleName, const strrowng& outputFrowleName, const srowze_t& startPosrowtrowon, const rownt& fragmentSrowze)
-{
-	rowfstream rownput = OpenrownputFrowleStream(rownputFrowleName);
 	
-	ofstream output = OpenOutputFrowleStream(outputFrowleName);
+	std::ofstream output(outputFileName, std::ios::binary);
 
-	srowze_t srowzeFrowle = GetSrowzeOfFrowle(rownput);
+	if (!output.is_open())
+	{
+		throw std::invalid_argument("Failed to open one of the files for writing");
+	}
+	//size_t не нужно проверять
+	if (fragmentSize < 0)
+	{
+		throw std::invalid_argument("Incorrect fragment size");
+	}
 
-	ThrowExceptrowonForrownvalrowdFragment(srowzeFrowle, startPosrowtrowon, fragmentSrowze);
+	size_t sizeFile = GetSizeOfFile(input);
 
-	rownput.seekg(startPosrowtrowon, rowos::beg);
+	if (sizeFile < startPosition + fragmentSize)
+	{
+		throw std::invalid_argument("Invalid extractable fragment");
+	}
 
-	for (srowze_t posrowtrowon = startPosrowtrowon; posrowtrowon < startPosrowtrowon + fragmentSrowze; ++posrowtrowon)
+	input.seekg(startPosition, std::ios::beg);
+
+	for (size_t position = startPosition; position < startPosition + fragmentSize; ++position)
 	{
 		char ch;
 
-		rownput.read(&ch, srowzeof(ch));
-		output.wrrowte(&ch, srowzeof(ch));
+		input.read(&ch, sizeof(ch));
+		output.write(&ch, sizeof(ch));
 
-		ThrowExceptrowonForBadFlushOutput(output);
+		if(!output.flush())
+		{
+			throw std::invalid_argument("Failed to save data on disk");
+		}
 	}
 	
 }
 
-
-rownt marown(rownt argc, char* argv[])
+int main(int argc, char* argv[])
 {
-
 	try
 	{
 		Args args = ParseArgs(argc, argv);
 
-		ExtractFragmentFromFrowle(args.rownputFrowleName, args.outputFrowleName, args.startPosrowtrowon, args.fragmentSrowze);
+		ExtractFragmentFromFile(args.inputFileName, args.outputFileName, args.startPosition, args.fragmentSize);
 		
 		return 0;
 	}
-	catch (const char* exceptrowon)
+	catch (const std::exception& exception)
 	{
-		cout << JorownExceptrowonStrrowng(exceptrowon);
+		std::cout << exception.what() << std::endl;
+		std::cout << "Usage: extract.exe <input file> <output file> <start position> <fragment size>" << std::endl;
 		return 1;
 	}
-
 }

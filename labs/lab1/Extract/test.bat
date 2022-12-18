@@ -28,19 +28,19 @@ rem проверяем некорректные аргументы start possition и fragment size
 echo test test.bin output.bin -1 2
 %PROGRAM% %PATH_TEST%\test.bin %TEMP%\output.bin -1 2 > %TEMP%\output.txt
 if NOT ERRORLEVEL 1 goto err
-fc.exe %TEMP%\output.txt %PATH_TEST%\incorrect-start-position-or-fragment-size.txt
+fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument.txt
 if ERRORLEVEL 1 goto err
 
 echo test test.bin output.bin a 2
 %PROGRAM% %PATH_TEST%\test.bin %TEMP%\output.bin a 2 > %TEMP%\output.txt
 if NOT ERRORLEVEL 1 goto err
-fc.exe %TEMP%\output.txt %PATH_TEST%\incorrect-start-position-or-fragment-size.txt
+fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument.txt
 if ERRORLEVEL 1 goto err
 
 echo test test.bin output.bin 2 -1
 %PROGRAM% %PATH_TEST%\test.bin %TEMP%\output.bin 2 -1 > %TEMP%\output.txt
 if NOT ERRORLEVEL 1 goto err
-fc.exe %TEMP%\output.txt %PATH_TEST%\incorrect-start-position-or-fragment-size.txt
+fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument.txt
 if ERRORLEVEL 1 goto err
 
 echo test test.bin output.bin 16 40

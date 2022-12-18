@@ -9,7 +9,7 @@ const int LABYRINTH_ROWS = 100;
 const int LABYRINTH_COLS = 100;
 
 using Labyrinth = std::array<std::array<char, LABYRINTH_COLS>, LABYRINTH_ROWS>;
-using Waves = std::array<std::array<int, LABYRINTH_COLS>, LABYRINTH_ROWS>;
+using WavesMatrix = std::array<std::array<int, LABYRINTH_COLS>, LABYRINTH_ROWS>;
 
 struct Args
 {
@@ -24,16 +24,17 @@ struct LabyrinthPoint
 };
 
 Args ParseArgs(const int& argc, char* argv[]);
-void GetLabyrinthFromFile(std::string& inputFileName, Labyrinth& labyrinth);
-void OutputLabyrinthToFile(std::string& outputFileName, Labyrinth& labyrinth);
-void WavesInitialization(Waves& waves);
+Labyrinth GetLabyrinthFromFile(std::string& inputFileName);
+void OutputLabyrinthToFile(std::string& outputFileName,const Labyrinth& labyrinth);
+void WavesInitialization(WavesMatrix& waves);
 void LabyrinthInitialization(Labyrinth& labyrinth);
-void FillWaves(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exit);
-void DrowPointsToExit(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exitPoint, LabyrinthPoint startPoint);
-void FindWayInLabyrunth(Labyrinth& labyrinth, Waves& waves);
+void DrowStartOnPosition(Labyrinth& labyrinth, int row, int col);
+void FillWaves(const Labyrinth& labyrinth, WavesMatrix& waves, LabyrinthPoint exit);
+Labyrinth DrowPointsToExit(const Labyrinth& labyrinth, WavesMatrix& waves, LabyrinthPoint exitPoint, LabyrinthPoint startPoint);
+Labyrinth FindWayInLabyrunth(Labyrinth& labyrinth);
 std::string ConcatStringWithMessage(const std::string& exception);
 
-void OutputLabyrinthToFile(std::string& outputFileName, Labyrinth& labyrinth) 
+void OutputLabyrinthToFile(std::string& outputFileName, const Labyrinth& labyrinth) 
 {
 	std::ofstream output;
 	output.open(outputFileName);
@@ -42,8 +43,6 @@ void OutputLabyrinthToFile(std::string& outputFileName, Labyrinth& labyrinth)
 	{
 		throw std::invalid_argument("Failed to open <output file> for reading");
 	}
-
-	output.setf(std::ios_base::skipws);
 
 	for (int i = 0; i < LABYRINTH_ROWS; i++)
 	{
@@ -55,7 +54,8 @@ void OutputLabyrinthToFile(std::string& outputFileName, Labyrinth& labyrinth)
 		output << std::endl;
 	}
 }
-void GetLabyrinthFromFile(std::string& inputFileName, Labyrinth& labyrinth)
+
+Labyrinth GetLabyrinthFromFile(std::string& inputFileName)
 {
 	std::ifstream input;
 	input.open(inputFileName);
@@ -73,6 +73,9 @@ void GetLabyrinthFromFile(std::string& inputFileName, Labyrinth& labyrinth)
 	int labyrinthRow = 0;
 	int labyrinthCol = 0;
 
+	Labyrinth labyrinth;
+	LabyrinthInitialization(labyrinth);
+
 	while (input >> character)
 	{
 		if (character == ' ' || character == '#' || character == 'A' || character == 'B')
@@ -82,11 +85,19 @@ void GetLabyrinthFromFile(std::string& inputFileName, Labyrinth& labyrinth)
 
 			if (character == 'A')
 			{
+				if (hasStart)
+				{
+					throw std::invalid_argument("Invalid Labyrinth."); 				
+				}
 				hasStart = true;
 			}
 
 			if (character == 'B')
 			{
+				if (hasExit)
+				{
+					throw std::invalid_argument("Invalid Labyrinth.");
+				}
 				hasExit = true;
 			}
 				
@@ -100,17 +111,14 @@ void GetLabyrinthFromFile(std::string& inputFileName, Labyrinth& labyrinth)
 		{
 			throw std::invalid_argument("Invalid Labyrinth.");
 		}
-
-		if (labyrinthRow > LABYRINTH_ROWS - 1 || labyrinthCol > LABYRINTH_COLS - 1)
-		{
-			throw std::invalid_argument("Invalid Labyrinth.");
-		}
 	}
 
 	if (!hasStart || !hasExit)
 	{
 		throw std::invalid_argument("Invalid Labyrinth.");
 	}
+
+	return labyrinth;
 }
 
 Args ParseArgs(const int& argc, char* argv[])
@@ -132,8 +140,8 @@ Args ParseArgs(const int& argc, char* argv[])
 
 	return args;
 }
-
-void WavesInitialization(Waves& waves)
+//просто вернуть результат
+void WavesInitialization(WavesMatrix& waves)
 {
 	for (int i = 0; i < LABYRINTH_ROWS; i++)
 	{
@@ -156,11 +164,13 @@ void LabyrinthInitialization(Labyrinth& labyrinth)
 }
 
 
-void FillWaves(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exit)
+
+void FillWaves(const Labyrinth& labyrinth, WavesMatrix& waves, LabyrinthPoint exit)
 {
 	int step = 1;
 	bool hasPath = true;
 	bool isFound = false;
+	//3 цикла - сложно
 	while (waves[exit.row][exit.col] == 0)
 	{
 		hasPath = false;
@@ -171,7 +181,7 @@ void FillWaves(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exit)
 				
 				if (waves[row][col] == step)
 				{
-					
+					//дублирование, слишком длинные строчки
 					if (col > 0 && (labyrinth[row][col - 1] == ' ' || labyrinth[row][col - 1] == 'B') && waves[row][col - 1] == 0)
 					{
 						waves[row][col - 1] = step + 1;
@@ -211,7 +221,7 @@ void FillWaves(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exit)
 
 }
 
-void DrowPointsToExit(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exitPoint, LabyrinthPoint startPoint)
+Labyrinth DrowPointsToExit(Labyrinth& labyrinth, WavesMatrix& waves, LabyrinthPoint exitPoint, LabyrinthPoint startPoint)
 {
 	LabyrinthPoint curPoint = exitPoint;
 	
@@ -219,6 +229,9 @@ void DrowPointsToExit(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exitPoi
 	{
 		LabyrinthPoint minPoint = {};
 		
+		//сложный код
+		//строки не более 100
+
 		if (curPoint.row > 0 && waves[curPoint.row - 1][curPoint.col] < waves[curPoint.row][curPoint.col] && waves[curPoint.row - 1][curPoint.col] != 0)
 		{
 			minPoint.row = curPoint.row - 1;
@@ -247,11 +260,21 @@ void DrowPointsToExit(Labyrinth& labyrinth, Waves& waves, LabyrinthPoint exitPoi
 		curPoint = minPoint;
 	}
 
-	labyrinth[curPoint.row][curPoint.col] = 'A';
+	//можно выйти за пределы массива
+	DrowStartOnPosition(labyrinth, curPoint.row, curPoint.col);
+	return labyrinth;
 }
 
-void FindWayInLabyrunth(Labyrinth& labyrinth, Waves& waves)
+void DrowStartOnPosition(Labyrinth& labyrinth,int row,int col) {
+	if (row <= LABYRINTH_ROWS && row >= 0 && col <= LABYRINTH_COLS && col >= 0)
+	{
+		labyrinth[row][col] = 'A';
+	}
+}
+
+Labyrinth FindWayInLabyrunth(Labyrinth& labyrinth)
 {
+	
 	LabyrinthPoint start = {};
 	LabyrinthPoint exit = {};
 	for (int i = 0; i < LABYRINTH_ROWS; i++)
@@ -270,10 +293,13 @@ void FindWayInLabyrunth(Labyrinth& labyrinth, Waves& waves)
 		}
 	}
 
+	WavesMatrix waves;
+	WavesInitialization(waves);
+
 	waves[start.row][start.col] = 1;
 	
 	FillWaves(labyrinth, waves, exit);
-	DrowPointsToExit(labyrinth, waves, exit, start);	
+	return DrowPointsToExit(labyrinth, waves, exit, start);	
 }
 
 std::string ConcatStringWithMessage(const std::string& exception)
@@ -282,23 +308,20 @@ std::string ConcatStringWithMessage(const std::string& exception)
 		+ "Usage: labyrinth.exe <input file> <output file>" + '\n';
 }
 
+//возврат значения из функции, а не входной параметр
 int main(int argc, char* argv[])
 {
 	try
 	{
 		Args args = ParseArgs(argc, argv);
-
-		Labyrinth labyrinth;
-		LabyrinthInitialization(labyrinth);
-
-		Waves waves;
-		WavesInitialization(waves);
-
-		GetLabyrinthFromFile(args.inputFileName, labyrinth);
-
-		FindWayInLabyrunth(labyrinth, waves);
 		
-		OutputLabyrinthToFile(args.outputFileName, labyrinth);
+		Labyrinth labyrinth = GetLabyrinthFromFile(args.inputFileName);
+		// возвращать значение
+		
+		// функция может создать внутри waves
+		Labyrinth result = FindWayInLabyrunth(labyrinth);
+		
+		OutputLabyrinthToFile(args.outputFileName, result);
 
 		return 0;
 	}
