@@ -22,7 +22,7 @@ TEST_CASE("Testing a function for an correct value")
 TEST_CASE("Testing a function for an correct value 2")
 {
 	std::istringstream input("-2.4 -2 8.25 3 2.40 4");
-	std::ostringstream output("");
+	std::ostringstream output;
 	// -2.400 -2.000 8.250 3.000 2.400 4.000
 	GetAndTransformVector(input, output, MultiplyNegativeElementsOnProductMinAndMax);
 	// max 8.250

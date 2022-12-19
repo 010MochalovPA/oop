@@ -15,7 +15,7 @@ std::optional<std::vector<double>> GetVectorFromInput(std::istream& inputStream)
 		vector.push_back(value);
 	}
 
-	if (vector.empty() || inputStream.bad() || !inputStream.eof())
+	if (vector.empty() || !inputStream.eof())
 	{
 		return std::nullopt;
 	}
@@ -47,7 +47,6 @@ void MultiplyNegativeElementsOnProductMinAndMax(std::vector<double>& vector)
 		if (element < 0)
 		{
 			element = element * (min * max);
-			return element;
 		}
 		return element;
 	});
