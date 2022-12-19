@@ -10,7 +10,7 @@ std::map<std::string, std::string> mnemonics = {
 	{ "&amp;", "&" },
 };
 
-std::string HtmlDecode(std::string const& html) 
+std::string HtmlDecode(const std::string& html) 
 {
 	size_t position = 0;
 
@@ -30,7 +30,7 @@ std::string HtmlDecode(std::string const& html)
 
 			size_t mnemonicEnd = html.find(";", position);
 			
-			mnemonic = html.substr(position, html.find(";", position) - foundPos + 1);
+			mnemonic = html.substr(position, mnemonicEnd - foundPos + 1);
 
 			if (mnemonics.find(mnemonic) != mnemonics.end())
 			{
