@@ -10,7 +10,7 @@ std::map<std::string, std::string> mnemonics = {
 	{ "&amp;", "&" },
 };
 
-//	если много амперсонтов подряд. ТО ПРОГРАММА БУДЕТ работать медленно
+//	если много амперсонов подряд. ТО ПРОГРАММА БУДЕТ работать медленно
 
 std::string HtmlDecode(const std::string& html) 
 {
