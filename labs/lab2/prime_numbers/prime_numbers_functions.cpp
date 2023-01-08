@@ -1,0 +1,59 @@
+#include "prime_numbers.h"
+
+bool isUnsignedNumber(const std::string& string)
+{
+	bool check = true;
+	std::for_each(string.begin(), string.end(), [&check](const char& ch) {
+		if (!isdigit(ch))
+		{
+			check = false;
+		}
+	});
+	return check;
+}
+
+void PrintSet(const std::set<int>& primeNumbers)
+{
+	if (primeNumbers.empty())
+	{
+		std::cout << "No prime numbers!";
+	}
+
+	std::for_each(primeNumbers.begin(), primeNumbers.end(), [](const int& number) {
+		std::cout << number << "\t";
+	});
+
+	std::cout << std::endl;
+}
+
+std::set<int> GeneratePrimeNumbersSet(const int upperBound)
+{
+	std::set<int> primeNumbers;
+
+	if (upperBound < 2)
+	{
+		return {};
+	}
+
+	primeNumbers.insert(primeNumbers.end(), 2);
+
+	std::vector<bool> signPrime(upperBound + 1, true);
+
+	for (int i = 3; i <= upperBound; i += 2)
+	{
+		if (signPrime[i])
+		{
+			primeNumbers.insert(primeNumbers.end(), i);
+
+			for (int j = i + i; j < upperBound; j += i)
+			{
+				if (signPrime[j])
+				{
+					signPrime[j] = false;
+				}
+			}
+		}
+	}
+
+	return primeNumbers;
+}
