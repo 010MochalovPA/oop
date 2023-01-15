@@ -197,7 +197,7 @@ void InsertInDictionary(Dictionary& dictionary, const std::string& word, const T
 	}
 	else
 	{
-		dictionary.emplace(word, translations); // метод emplase и try_emplase для создания пары +
+		dictionary.emplace(word, translations); // метод emplace и try_emplace для создания пары +
 	}
 }
 
