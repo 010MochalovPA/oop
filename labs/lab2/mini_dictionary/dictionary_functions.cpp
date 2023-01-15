@@ -1,4 +1,4 @@
-#include "./mini_dictionary.h"
+#include "./dictionary_functions.h"
 
 std::string Trim(std::string str)
 {
@@ -30,7 +30,7 @@ void CopyDictionaryToFile(std::ofstream& outputFile, Dictionary& dictionary)
 	for (auto word : dictionary)
 	{
 		outputFile << word.first << " - ";
-		PringTranslations(dictionary, outputFile, StringToLowerCase(word.first));
+		PrintTranslations(dictionary, outputFile, StringToLowerCase(word.first));
 	}
 }
 
@@ -47,11 +47,11 @@ void RunDictionary(std::istream& input, std::ostream& output, std::string dictio
 
 	dictionaryFile.close();
 	
-	bool dictionaryChanged = false;
+	bool willSave = false; // переименовать +
 
-	StartChat(input, output, dictionary, dictionaryChanged);
+	StartChat(input, output, dictionary, willSave);
 
-	if (dictionaryChanged)
+	if (willSave)
 	{
 		SaveDictionary(dictionaryPath, dictionary, output);
 	}
@@ -63,7 +63,7 @@ void OutputChatMessage(std::ostream& output, const std::string message)
 	output << "> " << message;
 }
 
-void StartChat(std::istream& input, std::ostream& output, Dictionary& dictionary, bool& dictionaryChanged)
+void StartChat(std::istream& input, std::ostream& output, Dictionary& dictionary, bool& willSave) // подумать, как разделить функц
 {
 	std::string line;
 	std::string newWord;
@@ -76,29 +76,29 @@ void StartChat(std::istream& input, std::ostream& output, Dictionary& dictionary
 
 			if (translationsSet.empty())
 			{
-				line = "";
+				line.clear(); // использовать метод clear +
 			}
 
-			if (Trim(line) != "")
+			if (!Trim(line).empty()) //лучше использовать empty +
 			{
 				AddTranslation(dictionary, newWord, line);
 
 				OutputChatMessage(output, "Слово \"" + newWord + "\" сохранено в словаре как - ");
-				PringTranslations(dictionary, output, newWord);
-				dictionaryChanged = true;
+				PrintTranslations(dictionary, output, newWord);
+				willSave = true;
 			}
 			else
 			{
 				OutputChatMessage(output, "Слово \"" + newWord + "\" проигнорировано.\n");
 			}
 
-			newWord = "";
+			newWord.clear();
 			continue;
 		}
 
 		if (Trim(line) == "...")
 		{
-			if (dictionaryChanged)
+			if (willSave)
 			{
 				OutputChatMessage(output, "Сохранить - \"Y\"\n");
 
@@ -110,18 +110,18 @@ void StartChat(std::istream& input, std::ostream& output, Dictionary& dictionary
 				}
 				else
 				{
-					dictionaryChanged = false;
+					willSave = false;
 				}
 			}
 			break;
 		}
 
-		if (Trim(line) != "")
+		if (!Trim(line).empty())
 		{
 			if (dictionary.find(StringToLowerCase(line)) != dictionary.end())
 			{
 				OutputChatMessage(output, "");
-				PringTranslations(dictionary, output, StringToLowerCase(line));
+				PrintTranslations(dictionary, output, StringToLowerCase(line));
 			}
 			else
 			{
@@ -136,30 +136,32 @@ std::string StringToLowerCase(const std::string& str)
 {
 	std::string result;
 
-	for (auto ch : str)
+	for (unsigned char ch : str)
 	{
-		result += tolower(ch);
+		result += tolower(ch);// использовать с unsigned char +
 	}
 
 	return Trim(result);
 }
 
-void PringTranslations(Dictionary& dictionary, std::ostream& output, std::string word)
+void PrintTranslations(Dictionary& dictionary, std::ostream& output, const std::string word) //const если не модифицируем +
 {
-	for (std::string translation : dictionary[word])
+	
+	// которые не модифицирует аргументы по константной ссылке (Dictionary& dictionary)
+
+	std::string line;
+	
+	for (const std::string& translation : dictionary[word]) // копируется строка +
 	{
-		output << translation;
-
-		if (translation != *dictionary[word].rbegin())
-		{
-			output << ", ";
-		}
+		line = line + translation + ", ";
+	 // найти более дешевый способ не печатать запяную в конце +
 	}
-
+	line.erase(line.size() - 2);
+	output << line;
 	output << std::endl;
 }
 
-Translations SplitStringIntoTranstations(std::string str, char separator)
+Translations SplitStringIntoTranstations(std::string str, char separator) // передать str по const
 {
 	Translations translations;
 
@@ -168,9 +170,11 @@ Translations SplitStringIntoTranstations(std::string str, char separator)
 
 	while (getline(strStream, translation, separator) || getline(strStream, translation))
 	{
-		if (!Trim(translation).empty())
+		translation = Trim(translation);
+		// trim вызывается несколько раз +
+		if (!translation.empty())
 		{
-			translations.insert(Trim(translation));
+			translations.insert(translation);
 		}
 	}
 	return translations;
@@ -193,12 +197,11 @@ void InsertInDictionary(Dictionary& dictionary, const std::string& word, const T
 	}
 	else
 	{
-		std::pair<std::string, Translations> newValue = { word, translations };
-		dictionary.insert(newValue);
+		dictionary.emplace(word, translations); // метод emplase и try_emplase для создания пары +
 	}
 }
 
-void AddTranslation(Dictionary& dictionary, const std::string word, const std::string translations)
+void AddTranslation(Dictionary& dictionary, const std::string& word, const std::string& translations)
 {
 	if (!word.empty() && !translations.empty())
 	{

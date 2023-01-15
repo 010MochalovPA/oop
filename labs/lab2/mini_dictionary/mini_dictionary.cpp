@@ -1,4 +1,4 @@
-#include "./mini_dictionary.h"
+#include "./dictionary_functions.h"
 
 
 

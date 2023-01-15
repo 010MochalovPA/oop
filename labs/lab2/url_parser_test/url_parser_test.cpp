@@ -1,13 +1,13 @@
 ﻿#define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
-#include "../url_parser/url_parser.h"
+#include "../url_parser/url_parser_functions.h"
 
 TEST_CASE("Testing function GetProtocolFromString")
 {
 	CHECK(GetProtocolFromString("htTp") == Protocol::HTTP);
 	CHECK(GetProtocolFromString("FTP") == Protocol::FTP);
 	CHECK(GetProtocolFromString("HTtpS") == Protocol::HTTPS);
-	CHECK(GetProtocolFromString("error") == Protocol::HTTPS);
+	CHECK(!GetProtocolFromString("error").has_value());
 }
 
 TEST_CASE("Testing function GetPortFromString")
@@ -64,7 +64,7 @@ TEST_CASE("Testing Invalid URL")
 	URL url2 = { line2 };
 	CHECK(!ParseURL(url2.url, url2.protocol, url2.port, url2.host, url2.document));
 
-	std::string line3 = "http://www.mysite.com//docs/document1.html?page=30&lang=en#title";
+	std::string line3 = "http://www.mysite.com///docs/document1.html?page=30&lang=en#title";
 	URL url3 = { line3 };
 	CHECK(!ParseURL(url3.url, url3.protocol, url3.port, url3.host, url3.document));
 

@@ -1,14 +1,14 @@
-﻿#include "prime_numbers.h"
+﻿#include "prime_numbers_functions.h"
 
-std::optional<int> getArgs(int argc, char* argv[])
+std::optional<int> GetUpperBound(int argc, char* argv[]) // с маленькой буквы возвращает не то, как называется +
 {
 	
-	if (argc != 2 || !isUnsignedNumber(argv[1]))
+	if (argc != 2) // isUnsignetNumber выпилить +
 	{
 		return std::nullopt;
 	}
 
-	int upperBound = std::stoi(argv[1]);
+	int upperBound = std::stoi(argv[1]); // разобраться со stoi +
 
 	if (upperBound < 0 || upperBound > 100000000)
 	{
@@ -20,17 +20,26 @@ std::optional<int> getArgs(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-	std::optional<int> upperBound = getArgs(argc, argv);
-
-	if (!upperBound.has_value())
+	try
 	{
-		std::cout << "Invalid input! Usage:prime_numbers.exe <number>" << std::endl;
-		return 1;
-	}
+		std::optional<int> upperBound = GetUpperBound(argc, argv);
 
-	std::set PrimeNumbers = GeneratePrimeNumbersSet(upperBound.value());
+		if (!upperBound.has_value())
+		{
+			std::cout << "Invalid input! Usage: prime_numbers.exe <number>" << std::endl;
+			return 1;
+		}
+
+		// название переменной с маленькой +
+		std::set primeNumbers = GeneratePrimeNumbersSet(upperBound.value());
+
+		PrintSet(primeNumbers);
+
+		return 0;
+	}
+	catch (const std::exception& exception)
+	{
+		std::cout << exception.what() << std::endl;
+	}
 	
-	PrintSet(PrimeNumbers);
-	
-	return 0;
 }

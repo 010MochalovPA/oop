@@ -1,16 +1,4 @@
-#include "prime_numbers.h"
-
-bool isUnsignedNumber(const std::string& string)
-{
-	bool check = true;
-	std::for_each(string.begin(), string.end(), [&check](const char& ch) {
-		if (!isdigit(ch))
-		{
-			check = false;
-		}
-	});
-	return check;
-}
+#include "./prime_numbers_functions.h"
 
 void PrintSet(const std::set<int>& primeNumbers)
 {
@@ -45,12 +33,10 @@ std::set<int> GeneratePrimeNumbersSet(const int upperBound)
 		{
 			primeNumbers.insert(primeNumbers.end(), i);
 
-			for (int j = i + i; j < upperBound; j += i)
+			for (int j = i + i; j <= upperBound; j += i) // тут, похоже, ошибка. Ќадо написать тест, который бы ее воспроизвел +
 			{
-				if (signPrime[j])
-				{
-					signPrime[j] = false;
-				}
+				// if (signPrime[j]) можно убрать +
+				signPrime[j] = false;
 			}
 		}
 	}

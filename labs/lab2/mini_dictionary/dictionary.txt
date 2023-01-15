@@ -1,8 +1,12 @@
 cat - кот, котенок, кошка
-dog - собака
+dog - пёс, собака
+hello - привет
 test - тест
+test1 - тест
 кот - cat
 котенок - cat
 кошка - cat
+пёс - dog
+привет - hello
 собака - dog
-тест - test
+тест - test, test1

@@ -135,7 +135,7 @@
     <ClCompile Include="prime_numbers_functions.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="prime_numbers.h" />
+    <ClInclude Include="prime_numbers_functions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

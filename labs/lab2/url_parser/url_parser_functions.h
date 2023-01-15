@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <regex>
+#include <optional>
 
 enum class Protocol
 {
@@ -19,8 +20,7 @@ struct URL
 	std::string document;
 };
 
-void RunCheckURL(std::istream& inputStream, std::ostream& outputStream);
 bool ParseURL(std::string const& url, Protocol& protocol, unsigned int& port, std::string& host, std::string& document);
 void PrintURL(const URL& url, std::ostream& outputStream);
-Protocol GetProtocolFromString(std::string protocol);
-int GetPortFromString(std::string port, Protocol protocol);
+std::optional<Protocol> GetProtocolFromString(std::string protocol);
+int GetPortFromString(const std::string& port, const Protocol& protocol);
