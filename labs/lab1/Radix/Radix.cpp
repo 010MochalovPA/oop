@@ -16,10 +16,10 @@ struct Args
 int SafeAdd(int, int);
 int SafeMultiply(int, int);
 int ConvertStringToInt(const std::string&, int /*radix*/);
-int DigitToInt(char, int /*radix*/);
+int ConvertDigitToInt(char, int /*radix*/);
+char ConvertIntToDigit(int, int /*radix*/);
 void ThrowOnEmptyString(const std::string&);
 void ThrowOnIncorrectNotation(int /*radix*/);
-void ThrowOnIncorrectDigitNotation(char, int /*radix*/);
 void ThrowOnOverflowOnAddition(int, int);
 void ThrowOnOverflowOnMultiply(int, int);
 std::string ConvertIntToString(int, int /*radix*/);
@@ -27,7 +27,7 @@ std::string ConvertSourceToDestNotation(const std::string& /*value*/, int /*sour
 std::string ConcatStringWithMessageUsage(const std::string&);
 Args ParseArgs(const int, char*[]);
 
-//argc принимать по значению
+//argc принимать по значению +
 Args ParseArgs(const int argc, char* argv[])
 {
 	if (argc != 4)
@@ -61,25 +61,6 @@ void ThrowOnOverflowOnAddition(int a, int b)
 	if (b < 0 && a < (INT_MAX - b))
 	{
 		throw std::overflow_error("Invalid argument");
-	}
-}
-
-// Функция пропускает цифры, равные основанию системы счисления, Например в двоичной системе пропустит 2, а в 16-й - G
-void ThrowOnIncorrectDigitNotation(char ch, int radix)
-{
-	if (ch > '9')
-	{
-		if (ch < 'A' || ch > 'A' + radix - DEC_RADIX - 1)
-		{
-			throw std::invalid_argument("Invalid argument");
-		}
-	}
-	else
-	{
-		if (ch - '0' > radix || ch < '0')
-		{
-			throw std::invalid_argument("Invalid argument");
-		}
 	}
 }
 
@@ -144,48 +125,61 @@ int SafeMultiply(int a, int b)
 	return a * b;
 }
 
-// Название функции не должно зависеть от контекста её использования, если тело не зависит
+// Название функции не должно зависеть от контекста её использования, если тело не зависит +
 std::string ConcatStringWithMessageUsage(const std::string& string)
 {
 	return string + '\n'
 		+ "Usage: radix.exe <source notation> <destination notation> <value>" + '\n';
 }
 
-// Переводит символ ch в число в системе счисления radix
-// Выбрасывает исключение, если ch -- не цифра в этой счисления
-int DigitToInt(char ch, int radix)
+// Переводит символ ch в число в системе счисления radix +
+// Выбрасывает исключение, если ch -- не цифра в этой счисления ?
+
+int ConvertDigitToInt(char ch, int radix)
 {
-	ThrowOnIncorrectDigitNotation(ch, radix);
-	
 	if (ch > '9')
 	{
+		if (ch < 'A' || ch > 'A' + radix - DEC_RADIX - 1)
+		{
+			throw std::invalid_argument("Invalid argument");
+		}
+
 		return ch - 'A' + DEC_RADIX;
 	}
-
-	return ch - '0';
-}
-
-char IntToDigit(int a, int radix)
-{
-	if (a > 9)
+	else
 	{
-		char result = a + 'A' - DEC_RADIX;
+		if (ch - '0' >= radix || ch < '0')
+		{
+			throw std::invalid_argument("Invalid argument");
+		}
 
-		ThrowOnIncorrectDigitNotation(result, radix);
-
-		return result;
+		return ch - '0';
+	}
+}
+// Функция пропускает цифры, равные основанию системы счисления, Например в двоичной системе пропустит 2, а в 16-й - G +
+char ConvertIntToDigit(int a, int radix)
+{
+	if (a >= 0 && a <= 9)
+	{
+		return '0' + a;
+	}
+	
+	if (a <= MAX_RADIX && a >= DEC_RADIX)
+	{
+		return 'A' + (a - DEC_RADIX);
 	}
 
-	char result = a + '0';
+	if (a >= radix)
+	{
+		throw std::invalid_argument("Invalid argument");
+	}
 
-	ThrowOnIncorrectDigitNotation(result, radix);
-
-	return result;
+	throw std::invalid_argument("Invalid argument");
 }
 
 int ConvertStringToInt(const std::string& strNumber, int radix)
 {
-	// А если строка strNumber пустая?
+	// А если строка strNumber пустая? +
 	ThrowOnEmptyString(strNumber);
 
 	ThrowOnIncorrectNotation(radix);
@@ -196,16 +190,31 @@ int ConvertStringToInt(const std::string& strNumber, int radix)
 	}
 
 	int result = 0;
+	int digit = 0;
 
-	for (unsigned int i = (strNumber[0] != '-') ? 0 : 1; i < strNumber.length(); i++)
+	bool signMinus = false;
+
+	if (strNumber[0] == '-')
 	{
-		result = SafeAdd(SafeMultiply(result, radix), DigitToInt(strNumber[i], radix));
+		signMinus = true;
 	}
 
-	return (strNumber[0] != '-') ? result : -result;
+	for (unsigned int i = (signMinus) ? 1 : 0; i < strNumber.length(); i++)
+	{
+		digit = ConvertDigitToInt(strNumber[i], radix);
 
+		if (signMinus)
+		{
+			result = SafeAdd(SafeMultiply(result, radix), -digit);
+		}
+		else
+		{
+			result = SafeAdd(SafeMultiply(result, radix), digit);
+		}
+	}
+	return result;
 }
-// Программа не пропускает число INT_MIN
+// Программа не пропускает число INT_MIN +
 std::string ConvertIntToString(int number, int radix)
 {
 	ThrowOnIncorrectNotation(radix);
@@ -216,18 +225,29 @@ std::string ConvertIntToString(int number, int radix)
 	}
 
 	std::string result = "";
-	bool signMinus = false;
 
+	bool signMinus = false;
+	
 	if (number < 0)
 	{
-		// Возможно переполнение при number = INT_MIN
-		number = -number;
+		// Возможно переполнение при number = INT_MIN +
 		signMinus = true;		
 	}
 	
-	while (number > 0)
+	while (number != 0)
 	{
-		result.insert(result.begin(), IntToDigit(number % radix, radix));
+		int value = number % radix;
+
+		if (signMinus)
+		{
+			value = -value;
+			result.insert(result.begin(), ConvertIntToDigit(value, radix));
+		}
+		else
+		{
+			result.insert(result.begin(), ConvertIntToDigit(value, radix));
+		}
+
 		number = number / radix;
 	}
 
@@ -235,7 +255,7 @@ std::string ConvertIntToString(int number, int radix)
 	{
 		result.insert(result.begin(), '-');
 	}
-		
+
 	return result;
 }
 
@@ -257,7 +277,6 @@ std::string ConvertSourceToDestNotation(const std::string& value, int sourceNota
 
 int main(int argc, char* argv[])
 {
-
 	try
 	{
 		Args args = ParseArgs(argc,argv);
@@ -265,7 +284,6 @@ int main(int argc, char* argv[])
 		std::cout << ConvertSourceToDestNotation(args.value, args.sourseNotation, args.destinationNotation) << std::endl;
 
 		return 0;
-
 	}
 	catch (const std::exception& exception)
 	{
@@ -273,5 +291,4 @@ int main(int argc, char* argv[])
 
 		return 1;
 	}
-	
 }

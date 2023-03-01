@@ -66,12 +66,6 @@ if NOT ERRORLEVEL 1 goto err
 fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument.txt
 if ERRORLEVEL 1 goto err
 
-echo test 10 12 -2147483648
-%PROGRAM% 10 12 -2147483648 > %TEMP%\output.txt
-if NOT ERRORLEVEL 1 goto err
-fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument.txt
-if ERRORLEVEL 1 goto err
-
 rem проверка граничных значений value
 echo test 10 12 2147483647
 %PROGRAM% 10 12 2147483647 > %TEMP%\output.txt

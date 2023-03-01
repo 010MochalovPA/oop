@@ -17,13 +17,13 @@ rem проверяем некорректные аргументы
 echo test a 
 %PROGRAM% a > %TEMP%\output.txt
 if NOT ERRORLEVEL 1 goto err
-fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument-byte.txt
+fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-stoi-argument.txt
 if ERRORLEVEL 1 goto err
 
 echo test -1
 %PROGRAM% -1 > %TEMP%\output.txt
 if NOT ERRORLEVEL 1 goto err
-fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-argument-byte.txt
+fc.exe %TEMP%\output.txt %PATH_TEST%\invalid-size.txt
 if ERRORLEVEL 1 goto err
 
 rem проверяем недопустимый размер аргумента (256)

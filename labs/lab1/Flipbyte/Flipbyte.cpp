@@ -5,7 +5,7 @@ const unsigned int RADIX = 10;
 const unsigned int COUNT_BITS_IN_BYTE = 8;
 
 std::string ConcatStringWithMessage(const std::string&);
-int FlipByte(int b);
+int FlipByte(uint8_t b);
 int SafeMultiply(int a, int b);
 int SafeAdd(int a, int b);
 
@@ -67,23 +67,14 @@ int ConvertStringToInt(const std::string& value)
 
 	return result;
 }
-// флипать биты по степени двойке
-int FlipByte(int byte)
+// флипать биты по степени двойке +
+int FlipByte(uint8_t byte)
 {
-	if (byte >> COUNT_BITS_IN_BYTE != 0)
-	{
-		throw std::invalid_argument("Argument <byte> exceeds 1 byte");
-	}
-
-	int result = 0;
-	for (int countFlips = 0; countFlips < 8; countFlips++)
-	{
-		result <<= 1;
-		result = result | (byte & (0x01));
-		byte >>= 1;
-	}
+	byte = (byte & 0b11110000) >> 4 | (byte & 0b00001111) << 4;
+	byte = (byte & 0b11001100) >> 2 | (byte & 0b00110011) << 2;
+	byte = (byte & 0b10101010) >> 1 | (byte & 0b01010101) << 1;
 	
-	return result;
+	return byte;
 }
 
 int main(int argc, char* argv[])
@@ -95,10 +86,18 @@ int main(int argc, char* argv[])
 			throw std::invalid_argument("Invalid argument count");
 		}
 
-		// использовать stoi
+		// использовать stoi +
+
 		int number = std::stoi(argv[1]);
 
-		std::cout << FlipByte(number) << std::endl;
+		if (number >> COUNT_BITS_IN_BYTE != 0)
+		{
+			throw std::invalid_argument("Argument <byte> exceeds 1 byte");
+		}
+
+		uint8_t byte = number;
+
+		std::cout << FlipByte(byte) << std::endl;
 
 		return 0;
 	}

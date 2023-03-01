@@ -1,0 +1,2 @@
+invalid stoi argument
+Usage: flipbyte.exe <byte>
