@@ -1,13 +1,5 @@
 #include "expand_template.h"
 
-void ReplaceSubString(std::string& str, std::string& newString, int length, int pos);
-void AddNodeBohr(std::vector<Node>& bohr, const std::string& str);
-void InitLinksOnBohr(std::vector<Node>& bohr);
-void Bohr_init(std::vector<Node>& bohr);
-bool ValidateValue(const std::string str);
-void AddNodesFromMap(std::vector<Node>& bohr, const std::map<std::string, std::string>& params);
-std::string ExpandTemplate(const std::vector<Node>& bohr, const std::string& tpl, std::map<std::string, std::string> params);
-
 std::optional<Args> GetArgs(const int& argc, char* argv[])
 {
 	if (argc < 5)
@@ -41,14 +33,16 @@ std::optional<Args> GetArgs(const int& argc, char* argv[])
 	return args;
 }
 
-void ReplaceSubString(std::string& str, std::string& newString, int length, int pos)
+// не используется pos
+// size_t
+void ReplaceSubString(std::string& str,const std::string& newString, int length, int pos)
 {
-
 	str.erase(str.length() - length, length);
 
 	str = str + newString;
 }
 
+// Add 
 void AddNodeBohr(std::vector<Node>& bohr, const std::string& str)
 {
 	int vert = 0;
@@ -67,6 +61,7 @@ void AddNodeBohr(std::vector<Node>& bohr, const std::string& str)
 
 		if (bohr[vert].to[ch] == -1)
 		{
+			// emplace_back(bohr[vert].value + str[i])
 			bohr.push_back(Node(bohr[vert].value + str[i]));
 			bohr[vert].to[ch] = (int)(bohr.size()) - 1;
 		}
@@ -100,7 +95,7 @@ void InitLinksOnBohr(std::vector<Node>& bohr)
 		int vert = queueVert.front();
 		queueVert.pop();
 
-		for (int c = 0; c < MAX_COUNT_CHARS; ++c)
+		for (int c = 0; c < MAX_COUNT_CHARS; c++)
 		{
 			int child = bohr[vert].to[c];
 
@@ -109,9 +104,9 @@ void InitLinksOnBohr(std::vector<Node>& bohr)
 				continue;
 			}
 
-			bohr[child].link = vert == 0 ? 0 : bohr[bohr[vert].link].to[c];
+			bohr[child].link = (vert == 0) ? 0 : bohr[bohr[vert].link].to[c];
 
-			for (int d = 0; d < MAX_COUNT_CHARS; ++d)
+			for (int d = 0; d < MAX_COUNT_CHARS; d++)
 			{
 				if (bohr[child].to[d] != -1)
 				{
@@ -126,7 +121,7 @@ void InitLinksOnBohr(std::vector<Node>& bohr)
 	}
 }
 
-void Bohr_init(std::vector<Node>& bohr)
+void Bohr_init(std::vector<Node>& bohr)// неверное название
 {
 	bohr.push_back(Node(""));
 }
@@ -177,23 +172,25 @@ std::string ExpandTemplate(const std::vector<Node>& bohr, const std::string& tpl
 
 		if (bohr[v].isTerm == true)
 		{
-
-			char next;
-
-			if (tpl[i + 1] == ' ')
+			if (i + 1 < tpl.length())
 			{
-				next = tpl[i + 1] - ' ' + MAX_COUNT_CHARS - 1;
-			}
-			else
-			{
-				next = tpl[i + 1] - 'a';
-			}
+				char next;
 
-			if (i + 1 < tpl.length() && bohr[v].length < bohr[bohr[v].to[next]].length)
-			{
-				continue;
+				if (tpl[i + 1] == ' ')
+				{
+					next = tpl[i + 1] - ' ' + MAX_COUNT_CHARS - 1;
+				}
+				else
+				{
+					next = tpl[i + 1] - 'a';
+				}
+				
+				if (bohr[v].value + tpl[i + 1] == bohr[bohr[v].to[next]].value)
+				{
+					continue;
+				}
 			}
-
+			
 			ReplaceSubString(result, params.find(bohr[v].value)->second, bohr[v].length, (i - bohr[v].length) + 1);
 		}
 	}

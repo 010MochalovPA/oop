@@ -8,7 +8,7 @@ bool ParseURL(std::string const& url, Protocol& protocol, unsigned int& port, st
 				   ":\\/\\/" // (://)
 				   "([\\w.]+)" // (2-host)
 				   "(:([\\d]+))?" // (3-:port(4-port))
-				   "((\\/([^\\/]+)?)+\\/?)?$" // (5-document)
+				   "((\\/([^\\/]+)?)+)?$" // (5-document)
 	);
 
 	if (std::regex_search(url.c_str(), result, reg))

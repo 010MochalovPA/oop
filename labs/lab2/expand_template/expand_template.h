@@ -11,7 +11,7 @@
 #include <queue>
 #include <string>
 
-const int MAX_COUNT_CHARS = 27;
+const int MAX_COUNT_CHARS = 27; // сделать для произ кол-ва симв
 
 struct Args
 {
@@ -30,7 +30,7 @@ struct Node
 
 	Node(const std::string& v)
 	{
-		memset(to, -1, sizeof(to));
+		memset(to, -1, sizeof(to));// std::FILL
 		length = 0;
 		isTerm = false;
 		link = -1;
@@ -38,7 +38,9 @@ struct Node
 	}
 };
 
-void ReplaceSubString(std::string& str, std::string& newString, int length, int pos);
+// Сделайте using Bohr = std::vector<Node>
+
+void ReplaceSubString(std::string& str, const std::string& newString, int length, int pos);
 void AddNodeBohr(std::vector<Node>& bohr, const std::string& str);
 void InitLinksOnBohr(std::vector<Node>& bohr);
 void Bohr_init(std::vector<Node>& bohr);

@@ -1,6 +1,6 @@
 #include "./dictionary_functions.h"
 
-
+// ןנמגונטעü ס הופטסמל
 
 int main(int argc, char* argv[])
 {
@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 		std::cout << "Usage: mini_dictionary.exe or mini_dictionary.exe <dictionary path>" << std::endl;
 		return 1;
 	}
-
+	
 	std::string dictionaryPath = argv[1] ? argv[1] : "dictionary.txt";
 
 	RunDictionary(std::cin, std::cout, dictionaryPath);

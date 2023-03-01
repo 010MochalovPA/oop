@@ -13,7 +13,7 @@ std::string Trim(std::string str)
 	return str;
 }
 
-void SaveDictionary(const std::string dictionaryPath, Dictionary& dictionary, std::ostream& output)
+void SaveDictionary(const std::string& dictionaryPath,const Dictionary& dictionary)
 {
 	std::ofstream outputFile(dictionaryPath);
 
@@ -25,7 +25,7 @@ void SaveDictionary(const std::string dictionaryPath, Dictionary& dictionary, st
 	CopyDictionaryToFile(outputFile, dictionary);
 }
 
-void CopyDictionaryToFile(std::ofstream& outputFile, Dictionary& dictionary)
+void CopyDictionaryToFile(std::ofstream& outputFile,const Dictionary& dictionary)
 {
 	for (auto word : dictionary)
 	{
@@ -53,7 +53,7 @@ void RunDictionary(std::istream& input, std::ostream& output, std::string dictio
 
 	if (willSave)
 	{
-		SaveDictionary(dictionaryPath, dictionary, output);
+		SaveDictionary(dictionaryPath, dictionary);
 	}
 
 }
@@ -144,14 +144,14 @@ std::string StringToLowerCase(const std::string& str)
 	return Trim(result);
 }
 
-void PrintTranslations(Dictionary& dictionary, std::ostream& output, const std::string word) //const если не модифицируем +
+void PrintTranslations(const Dictionary& dictionary, std::ostream& output, const std::string& word) //const если не модифицируем +
 {
 	
 	// которые не модифицирует аргументы по константной ссылке (Dictionary& dictionary)
 
 	std::string line;
 	
-	for (const std::string& translation : dictionary[word]) // копируется строка +
+	for (const std::string& translation : dictionary.at(word)) // копируется строка +
 	{
 		line = line + translation + ", ";
 	 // найти более дешевый способ не печатать запяную в конце +
@@ -161,7 +161,7 @@ void PrintTranslations(Dictionary& dictionary, std::ostream& output, const std::
 	output << std::endl;
 }
 
-Translations SplitStringIntoTranstations(std::string str, char separator) // передать str по const
+Translations SplitStringIntoTranstations(const std::string str, char separator) // передать str по const
 {
 	Translations translations;
 

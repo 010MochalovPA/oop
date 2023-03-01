@@ -43,3 +43,21 @@ TEST_CASE("Testing case 2")
 
 	CHECK(ExpandTemplate(bohr, tpl, params) == "mamamama");
 }
+
+TEST_CASE("Testing case 3")
+{
+	std::map<std::string, std::string> params;
+
+	params.emplace("ma", "mama");
+	params.emplace("mama", "mother");
+	const std::string tpl = "mama";
+
+	std::vector<Node> bohr;
+	Bohr_init(bohr);
+
+	AddNodesFromMap(bohr, params);
+
+	InitLinksOnBohr(bohr);
+
+	CHECK(ExpandTemplate(bohr, tpl, params) == "mother");
+}
