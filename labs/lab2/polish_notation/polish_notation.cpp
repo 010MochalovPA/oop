@@ -9,7 +9,9 @@ int main(int argc, char* argv[])
 		while (getline(std::cin, line))
 		{
 			std::stringstream inputstream(line);
-			std::cout << CalculatePolishExpressionFromStream(inputstream) << std::endl;
+			int result = CalculatePolishExpressionFromStream(inputstream);
+
+			std::cout << result << std::endl;
 		}
 
 		return 0;

@@ -1,9 +1,6 @@
 #include "polish_notation.h"
 
-void CalculateExpression(int& result, char sign, const int value)
-{
-}
-
+//inputStream или input
 int CalculatePolishExpressionFromStream(std::istream& inputstream)
 {
 	char ch;
@@ -11,6 +8,7 @@ int CalculatePolishExpressionFromStream(std::istream& inputstream)
 
 	if (ch != '(')
 	{
+		// либо runtime error или invalid argument
 		throw std::exception("ERROR");
 	}
 
@@ -31,14 +29,13 @@ int CalculatePolishExpressionFromStream(std::istream& inputstream)
 		throw std::exception("ERROR");
 	}
 
-	int result = sign == Sign::ADDITION ? 0 : 1; // TODO: как обойтись без инициализации result
-	
+	int result = (sign == Sign::ADDITION) ? 0 : 1;
 
 	while (inputstream >> ch && ch != ')')
 	{
 		inputstream.unget();
 
-		if (isalpha(ch))
+		if (isalpha(ch))// изменить условие например not is digit 
 		{
 			throw std::exception("ERROR");
 		}
@@ -64,7 +61,7 @@ int CalculatePolishExpressionFromStream(std::istream& inputstream)
 
 	return result;
 }
-
+// возмоджно стоит назвать updateResult
 void CalculateExpression(int& result, Sign sign, const int value)
 {
 	if (sign == Sign::ADDITION)

@@ -1,6 +1,6 @@
 #include <fstream>
-#include <string>
 #include <iostream>
+#include <string>
 
 using namespace std;
 void PrintLineIndex(int);
@@ -22,14 +22,15 @@ void ThrowExceptionForUnopenedStreams(ifstream& input1, ifstream& input2)
 	}
 }
 
-void ThrowExceptionForInvalidCountArgs(const int& argc) {
+void ThrowExceptionForInvalidCountArgs(const int& argc)
+{
 	if (argc != 3)
 	{
 		throw "Invalid argument count";
 	}
 }
 
-void PrintLineIndex(int lineIndex) 
+void PrintLineIndex(int lineIndex)
 {
 	cout << "Files are different. Line number is " << lineIndex << endl;
 }
@@ -76,5 +77,5 @@ int main(int argc, char* argv[])
 	{
 		cout << JoinExceptionString(exception);
 		return 1;
-	}	
+	}
 }

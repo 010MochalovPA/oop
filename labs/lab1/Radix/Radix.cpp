@@ -18,8 +18,6 @@ int SafeMultiply(int, int);
 int ConvertStringToInt(const std::string&, int /*radix*/);
 int ConvertDigitToInt(char, int /*radix*/);
 char ConvertIntToDigit(int, int /*radix*/);
-void ThrowOnEmptyString(const std::string&);
-void ThrowOnIncorrectNotation(int /*radix*/);
 void ThrowOnOverflowOnAddition(int, int);
 void ThrowOnOverflowOnMultiply(int, int);
 std::string ConvertIntToString(int, int /*radix*/);
@@ -43,26 +41,7 @@ Args ParseArgs(const int argc, char* argv[])
 	return args;
 }
 
-void ThrowOnEmptyString(const std::string& str)
-{
-	if (str.length() == 0)
-	{
-		throw std::invalid_argument("Invalid argument");
-	}
-}
-
-void ThrowOnOverflowOnAddition(int a, int b)
-{
-	if (b > 0 && a > (INT_MAX - b))
-	{
-		throw std::overflow_error("Invalid argument");
-	}
-
-	if (b < 0 && a < (INT_MAX - b))
-	{
-		throw std::overflow_error("Invalid argument");
-	}
-}
+// удалить неиспользуемые функции
 
 void ThrowOnOverflowOnMultiply(int a, int b)
 {
@@ -136,7 +115,7 @@ std::string ConcatStringWithMessageUsage(const std::string& string)
 // Выбрасывает исключение, если ch -- не цифра в этой счисления ?
 
 int ConvertDigitToInt(char ch, int radix)
-{
+{ // выглядит сложно
 	if (ch > '9')
 	{
 		if (ch < 'A' || ch > 'A' + radix - DEC_RADIX - 1)
@@ -168,7 +147,7 @@ char ConvertIntToDigit(int a, int radix)
 	{
 		return 'A' + (a - DEC_RADIX);
 	}
-
+	// возможно проверка лишняя
 	if (a >= radix)
 	{
 		throw std::invalid_argument("Invalid argument");
@@ -180,18 +159,23 @@ char ConvertIntToDigit(int a, int radix)
 int ConvertStringToInt(const std::string& strNumber, int radix)
 {
 	// А если строка strNumber пустая? +
-	ThrowOnEmptyString(strNumber);
+	if (strNumber.length() == 0) // empty лучще использовать empty
+	{
+		throw std::invalid_argument("Invalid argument");
+	}
 
-	ThrowOnIncorrectNotation(radix);
+	if (MIN_RADIX > radix || radix > MAX_RADIX)
+	{
+		throw std::invalid_argument("Invalid source or destonation notation");
+	}
 
-	if (strNumber == "0")
+	if (strNumber == "0") // возможно эта проверка лишнаяя
 	{
 		return 0;
 	}
 
 	int result = 0;
-	int digit = 0;
-
+	
 	bool signMinus = false;
 
 	if (strNumber[0] == '-')
@@ -201,7 +185,7 @@ int ConvertStringToInt(const std::string& strNumber, int radix)
 
 	for (unsigned int i = (signMinus) ? 1 : 0; i < strNumber.length(); i++)
 	{
-		digit = ConvertDigitToInt(strNumber[i], radix);
+		int digit = ConvertDigitToInt(strNumber[i], radix);
 
 		if (signMinus)
 		{
@@ -217,7 +201,10 @@ int ConvertStringToInt(const std::string& strNumber, int radix)
 // Программа не пропускает число INT_MIN +
 std::string ConvertIntToString(int number, int radix)
 {
-	ThrowOnIncorrectNotation(radix);
+	if (MIN_RADIX > radix || radix > MAX_RADIX)
+	{
+		throw std::invalid_argument("Invalid source or destonation notation");
+	}
 
 	if (number == 0)
 	{
@@ -226,7 +213,7 @@ std::string ConvertIntToString(int number, int radix)
 
 	std::string result = "";
 
-	bool signMinus = false;
+	bool signMinus = false; // можно написать signMinus = number < 0
 	
 	if (number < 0)
 	{
@@ -255,16 +242,9 @@ std::string ConvertIntToString(int number, int radix)
 	{
 		result.insert(result.begin(), '-');
 	}
+	// эффективней будет собрать строку в обратном порядке, потом отреверсирвать
 
 	return result;
-}
-
-void ThrowOnIncorrectNotation(int radix)
-{
-	if (MIN_RADIX > radix || radix > MAX_RADIX)
-	{
-		throw std::invalid_argument("Invalid source or destonation notation");
-	}
 }
 
 

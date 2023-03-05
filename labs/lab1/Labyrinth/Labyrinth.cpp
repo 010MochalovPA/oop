@@ -274,7 +274,6 @@ void DrowStartOnPosition(Labyrinth& labyrinth,int row,int col) {
 
 Labyrinth FindWayInLabyrunth(Labyrinth& labyrinth)
 {
-	
 	LabyrinthPoint start = {};
 	LabyrinthPoint exit = {};
 	for (int i = 0; i < LABYRINTH_ROWS; i++)
@@ -316,9 +315,9 @@ int main(int argc, char* argv[])
 		Args args = ParseArgs(argc, argv);
 		
 		Labyrinth labyrinth = GetLabyrinthFromFile(args.inputFileName);
-		// возвращать значение
+		// возвращать значение +
 		
-		// функция может создать внутри waves
+		// функция может создать внутри waves +
 		Labyrinth result = FindWayInLabyrunth(labyrinth);
 		
 		OutputLabyrinthToFile(args.outputFileName, result);
