@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include <string>
-#include <limits>
 #include <algorithm>
 
 const int MIN_RADIX = 2;
@@ -88,28 +87,19 @@ std::string ConcatStringWithMessageUsage(const std::string& string)
 }
 
 // Переводит символ ch в число в системе счисления radix +
-// Выбрасывает исключение, если ch -- не цифра в этой счисления ?
-
 int ConvertDigitToInt(char ch, int radix)
-{ // выглядит сложно
-	if (ch > '9')
+{ // выглядит сложно (упростил) ++
+	if (isalpha(ch) && ch >= 'A' && ch <= 'A' + radix - DEC_RADIX - 1)
 	{
-		if (ch < 'A' || ch > 'A' + radix - DEC_RADIX - 1)
-		{
-			throw std::invalid_argument("Invalid argument");
-		}
-
 		return ch - 'A' + DEC_RADIX;
 	}
-	else
+	
+	if (isdigit(ch) && ch - '0' < radix && ch >= '0')
 	{
-		if (ch - '0' >= radix || ch < '0')
-		{
-			throw std::invalid_argument("Invalid argument");
-		}
-
 		return ch - '0';
 	}
+
+	throw std::invalid_argument("Invalid argument");
 }
 // Функция пропускает цифры, равные основанию системы счисления, Например в двоичной системе пропустит 2, а в 16-й - G +
 char ConvertIntToDigit(int a, int radix)

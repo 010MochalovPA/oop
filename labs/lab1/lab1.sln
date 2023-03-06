@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Labyrinth", "Labyrinth\Laby
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "live", "live\live.vcxproj", "{A535F928-A66C-44CA-93E0-01ACE07BE0C5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Labyrinth2", "Labyrinth2\Labyrinth2.vcxproj", "{C818066E-7D8A-4469-9347-1F245A2E7AD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -169,6 +171,14 @@ Global
 		{A535F928-A66C-44CA-93E0-01ACE07BE0C5}.Release|Win32.Build.0 = Release|Win32
 		{A535F928-A66C-44CA-93E0-01ACE07BE0C5}.Release|x64.ActiveCfg = Release|x64
 		{A535F928-A66C-44CA-93E0-01ACE07BE0C5}.Release|x64.Build.0 = Release|x64
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Debug|Win32.Build.0 = Debug|Win32
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Debug|x64.ActiveCfg = Debug|x64
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Debug|x64.Build.0 = Debug|x64
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Release|Win32.ActiveCfg = Release|Win32
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Release|Win32.Build.0 = Release|Win32
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Release|x64.ActiveCfg = Release|x64
+		{C818066E-7D8A-4469-9347-1F245A2E7AD6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
