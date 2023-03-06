@@ -8,7 +8,22 @@ TEST_CASE("correct value: (+ 7)")
 	std::stringstream stream(line);
 	CHECK(CalculatePolishExpressionFromStream(stream) == 7);
 }
-// Добавить кейс
+// Добавить кейс со скобками  +++
+
+TEST_CASE("incorrect value: (*)")
+{
+	std::string line = "(*)";
+	std::stringstream stream(line);
+	CHECK_THROWS(CalculatePolishExpressionFromStream(stream));
+}
+
+TEST_CASE("incorrect value: (+)")
+{
+	std::string line = "(+)";
+	std::stringstream stream(line);
+	CHECK_THROWS(CalculatePolishExpressionFromStream(stream));
+}
+
 TEST_CASE("correct value: (* 8)")
 {
 	std::string line = "(* 8)";

@@ -1,73 +1,84 @@
 #include "polish_notation.h"
+#include <iostream>
+#include <sstream>
+#include <vector>
 
 //inputStream или input
-int CalculatePolishExpressionFromStream(std::istream& inputstream)
+int CalculatePolishExpressionFromStream(std::istream& inputStream)
 {
 	char ch;
-	inputstream >> ch;
+	inputStream >> ch;
 
 	if (ch != '(')
 	{
 		// либо runtime error или invalid argument
-		throw std::exception("ERROR");
+		throw std::runtime_error("ERROR");
 	}
 
-	inputstream >> ch;
+	inputStream >> ch;
 
-	Sign sign; //TODO: use enum to store sign ++
+	Operation operation; //TODO: use enum to store sign ++
 
 	if (ch == '+')
 	{
-		sign = Sign::ADDITION;
+		operation = Operation::ADDITION;
 	}
 	else if (ch == '*')
 	{
-		sign = Sign::MULTYPLY;
+		operation = Operation::MULTYPLY;
 	}
 	else
 	{
-		throw std::exception("ERROR");
+		throw std::runtime_error("ERROR");
 	}
 
-	int result = (sign == Sign::ADDITION) ? 0 : 1;
+	int result = (operation == Operation::ADDITION) ? 0 : 1;
 
-	while (inputstream >> ch && ch != ')')
+	if (inputStream >> ch && ch == ')')
 	{
-		inputstream.unget();
+		throw std::runtime_error("ERROR");
+	}
 
-		if (isalpha(ch))// изменить условие например not is digit 
+	inputStream.unget();
+
+	while (inputStream >> ch && ch != ')')
+	{
+		inputStream.unget();
+
+		if (isalpha(ch))
 		{
-			throw std::exception("ERROR");
+			throw std::runtime_error("ERROR");
 		}
 
 		int value; // TODO: лучше обьявлять переменные с учетом области видимости +
 
 		if (ch == '(')
 		{
-			value = CalculatePolishExpressionFromStream(inputstream); // TODO: порабоать с оптимизацией условий и кол-вом выходов из цикла +
+			value = CalculatePolishExpressionFromStream(inputStream); // TODO: порабоать с оптимизацией условий и кол-вом выходов из цикла +
 		}
 		else
 		{	
-			inputstream >> value;
+			inputStream >> value;
 		}
 
-		CalculateExpression(result, sign, value);
+		CalculateExpression(result, operation, value);
 	}
 
 	if (ch != ')')
 	{
-		throw std::exception("ERROR");
+		throw std::runtime_error("ERROR");
 	}
 
 	return result;
 }
 // возмоджно стоит назвать updateResult
-void CalculateExpression(int& result, Sign sign, const int value)
+void CalculateExpression(int& result, Operation operation, const int value)
 {
-	if (sign == Sign::ADDITION)
+	if (operation == Operation::ADDITION)
 	{
 		result += value;
 		return;
 	}
+
 	result *= value;
 }

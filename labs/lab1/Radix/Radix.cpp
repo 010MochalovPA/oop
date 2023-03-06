@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <limits>
+#include <algorithm>
 
 const int MIN_RADIX = 2;
 const int MAX_RADIX = 36;
@@ -18,8 +19,6 @@ int SafeMultiply(int, int);
 int ConvertStringToInt(const std::string&, int /*radix*/);
 int ConvertDigitToInt(char, int /*radix*/);
 char ConvertIntToDigit(int, int /*radix*/);
-void ThrowOnOverflowOnAddition(int, int);
-void ThrowOnOverflowOnMultiply(int, int);
 std::string ConvertIntToString(int, int /*radix*/);
 std::string ConvertSourceToDestNotation(const std::string& /*value*/, int /*sourceNotation*/, int /*destinationNotation*/);
 std::string ConcatStringWithMessageUsage(const std::string&);
@@ -42,29 +41,6 @@ Args ParseArgs(const int argc, char* argv[])
 }
 
 // удалить неиспользуемые функции
-
-void ThrowOnOverflowOnMultiply(int a, int b)
-{
-	if (a > 0 && b > 0 && a > (INT_MAX / b))
-	{
-		throw std::overflow_error("Invalid argument");
-	}
-
-	if (a > 0 && b < 0 && b < (INT_MIN / a))
-	{
-		throw std::overflow_error("Invalid argument");
-	}
-
-	if (a < 0 && b > 0 && a < (INT_MIN / b))
-	{
-		throw std::overflow_error("Invalid argument");
-	}
-
-	if (a < 0 && b < 0 && b < (INT_MAX / a))
-	{
-		throw std::overflow_error("Invalid argument"); 
-	}
-}
 
 int SafeAdd(int a, int b)
 {
@@ -147,11 +123,7 @@ char ConvertIntToDigit(int a, int radix)
 	{
 		return 'A' + (a - DEC_RADIX);
 	}
-	// возможно проверка лишняя
-	if (a >= radix)
-	{
-		throw std::invalid_argument("Invalid argument");
-	}
+	// возможно проверка лишняя (убрал лишнюю проверку) ++
 
 	throw std::invalid_argument("Invalid argument");
 }
@@ -159,7 +131,7 @@ char ConvertIntToDigit(int a, int radix)
 int ConvertStringToInt(const std::string& strNumber, int radix)
 {
 	// А если строка strNumber пустая? +
-	if (strNumber.length() == 0) // empty лучще использовать empty
+	if (strNumber.empty()) // empty лучще использовать empty
 	{
 		throw std::invalid_argument("Invalid argument");
 	}
@@ -169,10 +141,7 @@ int ConvertStringToInt(const std::string& strNumber, int radix)
 		throw std::invalid_argument("Invalid source or destonation notation");
 	}
 
-	if (strNumber == "0") // возможно эта проверка лишнаяя
-	{
-		return 0;
-	}
+	// возможно эта проверка лишнаяя (убрал лишнюю проверку) ++
 
 	int result = 0;
 	
@@ -211,38 +180,29 @@ std::string ConvertIntToString(int number, int radix)
 		return "0";
 	}
 
-	std::string result = "";
+	std::string result;
 
-	bool signMinus = false; // можно написать signMinus = number < 0
+	bool isNegative = number < 0; // можно написать signMinus = number < 0 ++ 
 	
-	if (number < 0)
-	{
-		// Возможно переполнение при number = INT_MIN +
-		signMinus = true;		
-	}
+	// Возможно переполнение при number = INT_MIN +
 	
 	while (number != 0)
 	{
-		int value = number % radix;
+		int value = (isNegative ? -number : number) % radix;
 
-		if (signMinus)
-		{
-			value = -value;
-			result.insert(result.begin(), ConvertIntToDigit(value, radix));
-		}
-		else
-		{
-			result.insert(result.begin(), ConvertIntToDigit(value, radix));
-		}
-
+		result.push_back(ConvertIntToDigit(value, radix));
+		
 		number = number / radix;
 	}
 
-	if (signMinus)
+	if (isNegative)
 	{
-		result.insert(result.begin(), '-');
+		result.push_back('-');
 	}
-	// эффективней будет собрать строку в обратном порядке, потом отреверсирвать
+
+	// эффективней будет собрать строку в обратном порядке, потом отреверсирвать ++
+
+	std::reverse(result.begin(), result.end());
 
 	return result;
 }
@@ -260,7 +220,6 @@ int main(int argc, char* argv[])
 	try
 	{
 		Args args = ParseArgs(argc,argv);
-
 		std::cout << ConvertSourceToDestNotation(args.value, args.sourseNotation, args.destinationNotation) << std::endl;
 
 		return 0;
