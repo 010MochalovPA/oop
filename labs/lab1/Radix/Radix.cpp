@@ -39,7 +39,7 @@ Args ParseArgs(const int argc, char* argv[])
 	return args;
 }
 
-// удалить неиспользуемые функции
+// удалить неиспользуемые функции ++
 
 int SafeAdd(int a, int b)
 {
