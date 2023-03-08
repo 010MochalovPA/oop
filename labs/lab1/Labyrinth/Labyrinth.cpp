@@ -349,7 +349,7 @@ Labyrinth DrowPointsToExit(Labyrinth& labyrinth, const WavesMatrix& waves,
 }
 
 // передавать по константной ссылке. Решить проблему если нет стартовой и конечной точки
-LabyrinthPoints GetStartAndExitPosition(Labyrinth& labyrinth)
+LabyrinthPoints GetStartAndExitPosition(const Labyrinth& labyrinth)
 {
 	LabyrinthPoint start, exit;
 
