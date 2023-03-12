@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Labyrinth2", "Labyrinth2\La
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Labyrinth3", "Labyrinth3\Labyrinth3.vcxproj", "{A13576A8-CB24-43C4-AF64-56AACBFD110D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bmpinfo", "bmp_info\bmp_info.vcxproj", "{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -189,6 +191,14 @@ Global
 		{A13576A8-CB24-43C4-AF64-56AACBFD110D}.Release|Win32.Build.0 = Release|Win32
 		{A13576A8-CB24-43C4-AF64-56AACBFD110D}.Release|x64.ActiveCfg = Release|x64
 		{A13576A8-CB24-43C4-AF64-56AACBFD110D}.Release|x64.Build.0 = Release|x64
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Debug|Win32.ActiveCfg = Debug|Win32
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Debug|Win32.Build.0 = Debug|Win32
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Debug|x64.ActiveCfg = Debug|x64
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Debug|x64.Build.0 = Debug|x64
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Release|Win32.ActiveCfg = Release|Win32
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Release|Win32.Build.0 = Release|Win32
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Release|x64.ActiveCfg = Release|x64
+		{676B4ABE-0FA1-41C5-BE88-9C6B03F8D635}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -285,7 +285,7 @@ bool FindPathToEnd(Labyrinth& labyrinth)
 	Point end = labyrinth.end;
 
 	std::queue<Point> queue;
-	queue.push(labyrinth.start);
+	queue.push(start);
 
 	while (!IsFieldСontainWave(labyrinth, end))
 	{
@@ -358,8 +358,6 @@ void PrintLabyrinthToFile(std::string& outputFileName, const Labyrinth& labyrint
 	}
 }
 
-
-
 int main(int argc, char* argv[])
 {
 	try
@@ -374,11 +372,5 @@ int main(int argc, char* argv[])
 
 		return 0;
 	}
-	catch (const std::exception& exc)
-	{
-		std::cout << exc.what() << std::endl
-				  << "Usage: labyrinth.exe <input file> <output file>" << std::endl;
-
-		return 1;
-	}
+	
 }
