@@ -1,2 +1,2 @@
-Impossible to find a path
+Can't find the path
 Usage: labyrinth.exe <input file> <output file>

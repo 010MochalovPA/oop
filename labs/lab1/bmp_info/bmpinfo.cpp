@@ -6,6 +6,8 @@
 
 const int BUFFER_SIZE = 4;
 const int BITS_IN_BYTE = 8;
+const int COUNT_BYTES_TWO = 2;
+const int COUNT_BYTES_FOUR = 4;
 
 const uint32_t SIZE_FILE_OFFSET = 2;
 const uint32_t DATA_OFFSET = 10;
@@ -40,8 +42,6 @@ struct BmpInfo
 	uint32_t colors;
 };
 
-
-
 std::string ParseArgs(const int& argc, char* argv[])
 {
 	if (argc != 2)
@@ -66,7 +66,7 @@ bool IsNotBmpFile(std::ifstream& input)
 	char buffer[BUFFER_SIZE];
 	
 	input.seekg(offset, std::ios::beg);
-	return input.read(buffer, 2) && buffer[0] != 'B' && buffer[1] != 'M';
+	return input.read(buffer, COUNT_BYTES_TWO) && buffer[0] != 'B' && buffer[1] != 'M';
 }
 
 uint32_t GetValueFromOffset(std::ifstream& input, uint32_t offset, int countBits)
@@ -74,8 +74,8 @@ uint32_t GetValueFromOffset(std::ifstream& input, uint32_t offset, int countBits
 	char buffer[BUFFER_SIZE]{};
 
 	uint32_t value{};
+
 	input.seekg(offset, std::ios::beg);
-	
 	if (input.read(buffer, countBits))
 	{
 		std::reverse(std::begin(buffer), std::end(buffer));
@@ -105,21 +105,21 @@ BmpInfo GetInfoFromFile(const std::string& bmpFileName)
 		throw std::invalid_argument("Not bmp file");
 	}
 
-	uint32_t fileSize = GetValueFromOffset(input, SIZE_FILE_OFFSET, 4);
-	uint32_t dataOffset = GetValueFromOffset(input, DATA_OFFSET, 4);
-	info.width = GetValueFromOffset(input, WIDTH_OFFSET, 4);
-	info.height = GetValueFromOffset(input, HEIGHT_OFFSET, 4);
-	info.bitsPerPixel = GetValueFromOffset(input, BIT_PER_PIXEL_OFFSET, 2);
-	uint32_t compressionType = GetValueFromOffset(input, COMPRESSION_TYPE_OFFSET, 4);
+	uint32_t fileSize = GetValueFromOffset(input, SIZE_FILE_OFFSET, COUNT_BYTES_FOUR);
+	uint32_t dataOffset = GetValueFromOffset(input, DATA_OFFSET, COUNT_BYTES_FOUR);
+	info.width = GetValueFromOffset(input, WIDTH_OFFSET, COUNT_BYTES_FOUR);
+	info.height = GetValueFromOffset(input, HEIGHT_OFFSET, COUNT_BYTES_FOUR);
+	info.bitsPerPixel = GetValueFromOffset(input, BIT_PER_PIXEL_OFFSET, COUNT_BYTES_TWO);
+	uint32_t compressionType = GetValueFromOffset(input, COMPRESSION_TYPE_OFFSET, COUNT_BYTES_FOUR);
 
-	auto it = COMPRESSION_TYPES.find(compressionType);
+	auto type = COMPRESSION_TYPES.find(compressionType);
 
-	if (it != COMPRESSION_TYPES.end())
+	if (type != COMPRESSION_TYPES.end())
 	{
-		info.compressionType = it->second;
+		info.compressionType = type->second;
 	}
 
-	uint32_t size = GetValueFromOffset(input, IMAGE_SIZE_OFFSET, 4);
+	uint32_t size = GetValueFromOffset(input, IMAGE_SIZE_OFFSET, COUNT_BYTES_FOUR);
 
 	if (size)
 	{
@@ -130,9 +130,9 @@ BmpInfo GetInfoFromFile(const std::string& bmpFileName)
 		info.size = fileSize - dataOffset;
 	}
 
-	uint32_t colors = GetValueFromOffset(input, COLORS_OFFSET, 4);
+	uint32_t colors = GetValueFromOffset(input, COLORS_OFFSET, COUNT_BYTES_FOUR);
 
-	if (colors && colors < 8)
+	if (colors && colors <= 8)
 	{
 		info.colors = colors;
 	}
