@@ -43,8 +43,6 @@ struct BitMapInfo
 	std::string compressionType;
 };
 
-
-
 bool IsNotBmpFile(std::ifstream& input)
 {
 	TwoBytesBuffer buffer;
@@ -128,65 +126,6 @@ std::string ParseArgs(const int& argc, char* argv[])
 
 	return bmpFileName;
 }
-
-//uint32_t ReadDIBHeaderSize(std::ifstream& input)
-//{
-//	FourBytesBuffer buffer{};
-//	uint32_t dibHeaderSize{};
-//
-//	input.seekg(DIB_HEADER_SIZE_OFFSET, input.beg);
-//
-//	if (input.read(buffer, DIB_HEADER_SIZE_BYTES))
-//	{
-//		std::reverse(std::begin(buffer), std::end(buffer));
-//		for (uint8_t ch : buffer)
-//		{
-//			dibHeaderSize = (dibHeaderSize << CHAR_BIT) | ch;
-//		}
-//	}
-//
-//	input.seekg(inputPosition, input.beg);
-//
-//	return dibHeaderSize;
-//}
-
-//BmpInfo GetInfoFromFile(const std::string& bmpFileName)
-//{
-//	info.width = GetValueFromOffset(input, WIDTH_OFFSET, 4);
-//	info.height = GetValueFromOffset(input, HEIGHT_OFFSET, 4);
-//	info.bitsPerPixel = GetValueFromOffset(input, BIT_PER_PIXEL_OFFSET, 2);
-//
-//	uint32_t compressionType = GetValueFromOffset(input, COMPRESSION_TYPE_OFFSET, 4);
-//	auto type = COMPRESSION_TYPES.find(compressionType);
-//
-//	if (type != COMPRESSION_TYPES.end())
-//	{
-//		info.compressionType = type->second;
-//	}
-//
-//	uint32_t size = GetValueFromOffset(input, IMAGE_SIZE_OFFSET, 4);
-//
-//	if (size)
-//	{
-//		info.size = size;
-//	}
-//	else
-//	{
-//		uint32_t dataOffset = GetValueFromOffset(input, DATA_OFFSET, 4);
-//		uint32_t fileSize = GetValueFromOffset(input, SIZE_FILE_OFFSET, 4);
-//
-//		info.size = fileSize - dataOffset;
-//	}
-//
-//	uint32_t colors = GetValueFromOffset(input, COLORS_OFFSET, 4);
-//
-//	if (colors && colors < 8)
-//	{
-//		info.colors = colors;
-//	}
-//
-//	return info;
-//}
 
 void PrintBmpInfo(const BitMapInfo& info)
 {
