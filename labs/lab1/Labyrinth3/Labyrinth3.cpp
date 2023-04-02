@@ -11,7 +11,12 @@
 const size_t LABYRINTH_ROWS = 100;
 const size_t LABYRINTH_COLS = 100;
 const std::set<char> AVALIBLE_CHARS = { ' ', 'A', 'B', '#' };
+const char START_CHAR = 'A';
+const char END_CHAR = 'B';
+const char BORDER_CHAR = '#';
+const char DOT_CHAR = '.';
 
+//почему лаб
 struct LabField
 {
 	char value;
@@ -44,12 +49,12 @@ struct Args
 
 bool IsStartField(char ch)
 {
-	return (ch == 'A');
+	return (ch == START_CHAR);
 }
 
 bool IsEndField(char ch)
 {
-	return (ch == 'B');
+	return (ch == END_CHAR);
 }
 
 bool IsDirectionLeft(const Point& field)
@@ -100,7 +105,7 @@ Labyrinth GetLabyrinthFromFile(const std::string& inputFileName)
 	std::ifstream input;
 	input.open(inputFileName);
 
-	if (!input.is_open()) // использовать runtime_error
+	if (!input.is_open())
 	{
 		throw std::runtime_error("Failed to open <input file> for reading");
 	}
@@ -120,9 +125,7 @@ Labyrinth GetLabyrinthFromFile(const std::string& inputFileName)
 				throw std::runtime_error("Invalid Labyrinth.");
 			}
 
-			LabField field = { ch };
-
-			labyrinth.fields[row][col] = field;
+			labyrinth.fields[row][col] = { ch };
 
 			if (IsStartField(labyrinth.fields[row][col].value))
 			{
@@ -168,28 +171,21 @@ Args ParseArgs(const int& argc, char* argv[])
 	return args;
 }
 
-std::vector<Point> GetCheckableFiedls(const Point& field)
+std::vector<Point> GetCheckableFiedlsAround(const Point& field)
 {
 	std::vector<Point> checkableFields{};
 
-	if (IsDirectionLeft(field))
+	for (int row = -1; row <= 1; row++)
 	{
-		checkableFields.push_back({ field.row, field.col - 1 });
-	}
+		for (int col = -1; col <= 1; col++)
+		{
+			if ((row == 0 && col == 0) || (row != 0 && col != 0))
+			{
+				continue;
+			}
 
-	if (IsDirectionRight(field))
-	{
-		checkableFields.push_back({ field.row, field.col + 1 });
-	}
-
-	if (IsDirectionTop(field))
-	{
-		checkableFields.push_back({ field.row - 1, field.col});
-	}
-
-	if (IsDirectionBottom(field))
-	{
-		checkableFields.push_back({ field.row + 1, field.col });
+			checkableFields.push_back({ field.row + row, field.col + col });
+		}
 	}
 
 	return checkableFields;
@@ -197,36 +193,19 @@ std::vector<Point> GetCheckableFiedls(const Point& field)
 
 bool IsAvalibleLabyrinthField(const Labyrinth& labyrinth, const Point& field)
 {
-	bool isNotBorder = labyrinth.fields[field.row][field.col].value != '#';
-	bool notHasWave = !labyrinth.fields[field.row][field.col].wave;
-	return isNotBorder && notHasWave;
+	bool isNotBorder = labyrinth.fields[field.row][field.col].value != BORDER_CHAR;
+	bool hasWave = labyrinth.fields[field.row][field.col].wave;
+	return isNotBorder && !hasWave;
 }
 
 bool IsFieldСontainWave(const Labyrinth& labyrinth, const Point& field)
 {
-	return labyrinth.fields[field.row][field.col].wave;
+	return labyrinth.fields[field.row][field.col].wave != 0;
 }
 
-std::vector<Point> GetAvalibleLabyrinthFieldsAround(const Labyrinth& labyrinth, const Point& field)
+std::vector<Point> GetAvalibleWavesFieldsAround(const Labyrinth& labyrinth, const Point& field)
 {
-	std::vector<Point> checkableFields = GetCheckableFiedls(field);
-
-	std::vector<Point> avalibleFields{};
-
-	for (Point field : checkableFields)
-	{
-		if (IsAvalibleLabyrinthField(labyrinth, field))
-		{
-			avalibleFields.push_back(field);
-		}
-	}
-
-	return avalibleFields;
-}
-
-std::vector<Point> GetAvalibleWavesFieldsNearby(const Labyrinth& labyrinth, const Point& field)
-{
-	std::vector<Point> checkableFields = GetCheckableFiedls(field);
+	std::vector<Point> checkableFields = GetCheckableFiedlsAround(field);
 
 	std::vector<Point> avalibleFields{};
 
@@ -241,7 +220,7 @@ std::vector<Point> GetAvalibleWavesFieldsNearby(const Labyrinth& labyrinth, cons
 	return avalibleFields;
 }
 
-bool IsSameFieds(const Point& cur, const Point& dif)
+bool IsSameFields(const Point& cur, const Point& dif)
 {
 	return cur.row == dif.row && cur.col == dif.col;
 }
@@ -250,11 +229,11 @@ void DrawDotsToPath(Labyrinth& labyrinth)
 {
 	Point curField = labyrinth.end;
 
-	while (!IsSameFieds(curField, labyrinth.start))
+	while (!IsSameFields(curField, labyrinth.start))
 	{
 		Point minField = curField;
 		
-		std::vector<Point> avalibleFields = GetAvalibleWavesFieldsNearby(labyrinth, minField);
+		std::vector<Point> avalibleFields = GetAvalibleWavesFieldsAround(labyrinth, minField);
 
 		for (Point field : avalibleFields)
 		{
@@ -272,9 +251,42 @@ void DrawDotsToPath(Labyrinth& labyrinth)
 			}
 		}
 
-		labyrinth.fields[minField.row][minField.col].value = '.';
+		labyrinth.fields[minField.row][minField.col].value = DOT_CHAR;
 		curField = minField;
 	}
+}
+
+std::vector<Point> MarkAndGetAvalibleLabyrinthFieldsAround(Labyrinth& labyrinth, const Point& field, int step)
+{
+	std::vector<Point> checkableFields = GetCheckableFiedlsAround(field);
+
+	std::vector<Point> avalibleFields{};
+
+	for (Point field : checkableFields)
+	{
+		if (IsAvalibleLabyrinthField(labyrinth, field))
+		{
+			labyrinth.fields[field.row][field.col].wave = step;
+			labyrinth.hasPath = true;
+			avalibleFields.push_back(field);
+		}
+	}
+
+	return avalibleFields;
+}
+
+std::vector<Point> MarkAndGetNextFieldsOnCurrentLevel(std::queue<Point>& queue, Labyrinth& labyrinth, int step)
+{
+	std::vector<Point> nextFields{};
+	while (!queue.empty())
+	{
+		// как будто многократно попадают одни и теже координаты ++
+		std::vector<Point> nextAvalibleFields = MarkAndGetAvalibleLabyrinthFieldsAround(labyrinth, queue.front(), step);
+		queue.pop();
+		nextFields.insert(nextFields.end(), nextAvalibleFields.begin(), nextAvalibleFields.end());
+	}
+
+	return nextFields;
 }
 
 bool FindPathToEnd(Labyrinth& labyrinth)
@@ -289,32 +301,17 @@ bool FindPathToEnd(Labyrinth& labyrinth)
 
 	while (!IsFieldСontainWave(labyrinth, end))
 	{
-		labyrinth.hasPath = false;
-		std::vector<Point> nextFields{};
 		step++;
+		labyrinth.hasPath = false;
 
-		while (!queue.empty())
-		{
-			Point field = queue.front();
-			queue.pop();
-			std::vector<Point> nextAvalibleFields = GetAvalibleLabyrinthFieldsAround(labyrinth, field);
-			nextFields.insert(nextFields.end(), nextAvalibleFields.begin(), nextAvalibleFields.end());
-		}
+		// вынести в отдельную функцию ++
+		std::vector<Point> nextFields = MarkAndGetNextFieldsOnCurrentLevel(queue, labyrinth, step);
 
 		if (!nextFields.empty())
 		{
 			for (Point field : nextFields)
 			{
-				labyrinth.fields[field.row][field.col].wave = step;
-
-				labyrinth.hasPath = true;
 				queue.push(field);
-
-				if (labyrinth.fields[end.row][end.col].wave)
-				{
-					std::queue<Point>().swap(queue);
-					return true;
-				}
 			}
 		}
 
@@ -334,7 +331,7 @@ void FindPathInLabyrinth(Labyrinth& labyrinth)
 		return;
 	}
 
-	throw std::runtime_error("Impossible to find a path");
+	throw std::runtime_error("Can't find the path");
 };
 
 void PrintLabyrinthToFile(std::string& outputFileName, const Labyrinth& labyrinth)
@@ -347,13 +344,13 @@ void PrintLabyrinthToFile(std::string& outputFileName, const Labyrinth& labyrint
 		throw std::invalid_argument("Failed to open <output file> for reading");
 	}
 
-	for (int row = 0; row < LABYRINTH_ROWS; row++)
+	// использоват range-based for ++
+	for (auto& row : labyrinth.fields)
 	{
-		for (int col = 0; col < LABYRINTH_COLS; col++)
+		for (auto& field : row)
 		{
-			output << labyrinth.fields[row][col].value;
+			output << field.value;
 		}
-
 		output << std::endl;
 	}
 }
@@ -372,5 +369,11 @@ int main(int argc, char* argv[])
 
 		return 0;
 	}
-	
+	catch (const std::exception& exc)
+	{
+		std::cout << exc.what() << std::endl
+				  << "Usage: labyrinth.exe <input file> <output file>" << std::endl;
+
+		return 1;
+	}
 }
