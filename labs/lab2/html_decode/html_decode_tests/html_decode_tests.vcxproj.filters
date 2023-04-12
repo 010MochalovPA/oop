@@ -18,7 +18,7 @@
     <ClCompile Include="html_decode_tests.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="..\html_decode_resources.cpp">
+    <ClCompile Include="..\html_decode_functions.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

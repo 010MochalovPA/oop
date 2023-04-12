@@ -133,7 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="html_decode.cpp" />
-    <ClCompile Include="html_decode_resources.cpp" />
+    <ClCompile Include="html_decode_functions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="html_decode_headers.h" />

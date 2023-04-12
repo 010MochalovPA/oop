@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\html_decode_resources.cpp" />
+    <ClCompile Include="..\html_decode_functions.cpp" />
     <ClCompile Include="html_decode_tests.cpp" />
   </ItemGroup>
   <ItemGroup>

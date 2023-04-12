@@ -10,7 +10,7 @@ const std::map<std::string, std::string> mnemonics = {
 	{ "&amp;", "&" },
 };
 
-const size_t MAX_MNEMONIC_LENGTH = 6;
+const size_t MAX_MNEMONIC_LENGTH = 5;
 //	если много амперсонов подряд. ТО ПРОГРАММА БУДЕТ работать медленно
 
 std::string HtmlDecode(const std::string& html) 
@@ -27,13 +27,20 @@ std::string HtmlDecode(const std::string& html)
 
 		if (foundPos != std::string::npos)
 		{
+
 			result.append(html, position, foundPos - position);
+
+			size_t lengthToEnd = html.length() - foundPos - 1;
+
+			size_t subStringEnd = std::min(lengthToEnd, MAX_MNEMONIC_LENGTH);
+
+			std::string subString = html.substr(foundPos, subStringEnd);
 
 			position = foundPos;
 
-			size_t mnemonicEnd = html.find(";", position); // не оптимально ищет 
+			size_t mnemonicEnd = subString.find(";");
 			
-			mnemonic = html.substr(position, mnemonicEnd - foundPos + 1);
+			mnemonic = html.substr(position, mnemonicEnd);
 			
 			if (mnemonics.find(mnemonic) != mnemonics.end())
 			{

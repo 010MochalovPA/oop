@@ -35,14 +35,14 @@ std::optional<Args> GetArgs(const int& argc, char* argv[])
 
 // не используется pos
 // size_t
-void ReplaceSubString(std::string& str,const std::string& newString, int length, int pos)
+void ReplaceSubString(std::string& str,const std::string& newString, int length)
 {
 	str.erase(str.length() - length, length);
 
 	str = str + newString;
 }
 
-// Add 
+// Add ++
 void AddNodeBohr(std::vector<Node>& bohr, const std::string& str)
 {
 	int vert = 0;
@@ -61,8 +61,8 @@ void AddNodeBohr(std::vector<Node>& bohr, const std::string& str)
 
 		if (bohr[vert].to[ch] == -1)
 		{
-			// emplace_back(bohr[vert].value + str[i])
-			bohr.push_back(Node(bohr[vert].value + str[i]));
+			//emplace_back(bohr[vert].value + str[i])
+			bohr.emplace_back(Node(bohr[vert].value + str[i]));
 			bohr[vert].to[ch] = (int)(bohr.size()) - 1;
 		}
 
@@ -191,7 +191,7 @@ std::string ExpandTemplate(const std::vector<Node>& bohr, const std::string& tpl
 				}
 			}
 			
-			ReplaceSubString(result, params.find(bohr[v].value)->second, bohr[v].length, (i - bohr[v].length) + 1);
+			ReplaceSubString(result, params.find(bohr[v].value)->second, bohr[v].length);
 		}
 	}
 	return result;
