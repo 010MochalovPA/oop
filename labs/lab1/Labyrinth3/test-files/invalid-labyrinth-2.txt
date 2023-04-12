@@ -1,0 +1,2 @@
+Invalid Labyrinth.
+Usage: labyrinth.exe <input file> <output file>

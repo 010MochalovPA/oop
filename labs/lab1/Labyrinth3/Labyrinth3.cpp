@@ -16,14 +16,13 @@ const char END_CHAR = 'B';
 const char BORDER_CHAR = '#';
 const char DOT_CHAR = '.';
 
-//почему лаб
-struct LabField
+struct Field
 {
 	char value;
 	int wave;
 };
 
-using Fields = std::array<std::array<LabField, LABYRINTH_COLS>, LABYRINTH_ROWS>;
+using Fields = std::array<std::array<Field, LABYRINTH_COLS>, LABYRINTH_ROWS>;
 
 struct Point
 {
@@ -293,13 +292,10 @@ bool FindPathToEnd(Labyrinth& labyrinth)
 {
 	int step = 1;
 
-	Point start = labyrinth.start;
-	Point end = labyrinth.end;
-
 	std::queue<Point> queue;
-	queue.push(start);
+	queue.push(labyrinth.start);
 
-	while (!IsFieldСontainWave(labyrinth, end))
+	while (!IsFieldСontainWave(labyrinth, labyrinth.end))
 	{
 		step++;
 		labyrinth.hasPath = false;
@@ -345,9 +341,9 @@ void PrintLabyrinthToFile(std::string& outputFileName, const Labyrinth& labyrint
 	}
 
 	// использоват range-based for ++
-	for (auto& row : labyrinth.fields)
+	for (const auto& row : labyrinth.fields)
 	{
-		for (auto& field : row)
+		for (const auto& field : row)
 		{
 			output << field.value;
 		}

@@ -1,0 +1,5 @@
+Resolution:	200x200
+Bits in pixel:	24
+Colors:		16777216
+Compression:	BI_RGB
+Size image:	120000

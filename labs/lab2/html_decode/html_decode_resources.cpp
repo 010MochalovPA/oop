@@ -1,8 +1,8 @@
 #include <map>
 #include <string>
 #include "html_decode_headers.h"
-
-std::map<std::string, std::string> mnemonics = { 
+// Обьявить как const ++
+const std::map<std::string, std::string> mnemonics = { 
 	{ "&quot;", "\"" },
 	{ "&apos;", "\'" },
 	{ "&lt;", "<" },
@@ -10,6 +10,7 @@ std::map<std::string, std::string> mnemonics = {
 	{ "&amp;", "&" },
 };
 
+const size_t MAX_MNEMONIC_LENGTH = 6;
 //	если много амперсонов подряд. ТО ПРОГРАММА БУДЕТ работать медленно
 
 std::string HtmlDecode(const std::string& html) 
@@ -30,13 +31,14 @@ std::string HtmlDecode(const std::string& html)
 
 			position = foundPos;
 
-			size_t mnemonicEnd = html.find(";", position);
+			size_t mnemonicEnd = html.find(";", position); // не оптимально ищет 
 			
 			mnemonic = html.substr(position, mnemonicEnd - foundPos + 1);
-
+			
 			if (mnemonics.find(mnemonic) != mnemonics.end())
 			{
-				result.append(mnemonics[mnemonic]);
+				std::string findMnemonic = (*mnemonics.find(mnemonic)).second;
+				result.append(findMnemonic);
 				position = position + mnemonic.length();
 			}
 			else
@@ -47,11 +49,14 @@ std::string HtmlDecode(const std::string& html)
 		}
 		else
 		{
-			result.append(html, position);
-			position = html.length();
+			break;
+			// КАК будто можно выполнть аппенд сразу;
+			// МОЖНО СДЕЛАТЬ БРЕЙК
 		}
 
 	}
+
+	result.append(html, position);
 
 	return result;
 }
