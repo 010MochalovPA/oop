@@ -10,10 +10,9 @@ const std::map<std::string, std::string> mnemonics = {
 	{ "&amp;", "&" },
 };
 
-const size_t MAX_MNEMONIC_LENGTH = 5;
-//	���� ����� ���������� ������. �� ��������� ����� �������� ��������
+const size_t MAX_MNEMONIC_LENGTH = 6;
 
-std::string HtmlDecode(const std::string& html) 
+std::string HtmlDecode(const std::string& html)
 {
 	size_t position = 0;
 
@@ -29,23 +28,11 @@ std::string HtmlDecode(const std::string& html)
 		{
 			result.append(html, position, foundPos - position);
 
-			size_t lengthToEnd = html.length() - foundPos - 1;
-			size_t subStringEnd = std::min(lengthToEnd, MAX_MNEMONIC_LENGTH);
-
-			std::string subString = html.substr(foundPos, subStringEnd);
-
 			position = foundPos;
 
-			size_t mnemonicEnd = subString.find(";");
+			size_t mnemonicEnd = html.find(";", position);
 
-			if (mnemonicEnd != std::string::npos)
-			{
-				mnemonic = subString.substr(0, mnemonicEnd);
-			}
-			else
-			{
-				mnemonic = subString;
-			}
+			mnemonic = html.substr(position, mnemonicEnd - foundPos + 1);
 
 			if (mnemonics.find(mnemonic) != mnemonics.end())
 			{
@@ -62,10 +49,7 @@ std::string HtmlDecode(const std::string& html)
 		else
 		{
 			break;
-			// ��� ����� ����� �������� ������ �����;
-			// ����� ������� �����
 		}
-
 	}
 
 	result.append(html, position);
