@@ -23,22 +23,24 @@ std::string HtmlDecode(const std::string& html)
 	while (position < html.length())
 	{
 		size_t foundPos = html.find("&", position);
-
 		if (foundPos != std::string::npos)
 		{
 			result.append(html, position, foundPos - position);
 
 			position = foundPos;
 
-			size_t mnemonicEnd = html.find(";", position);
+			std::string substring = html.substr(position, MAX_MNEMONIC_LENGTH);
+			
+			size_t mnemonicEnd = substring.find(";"); // не оптимально ищет ++
 
-			mnemonic = html.substr(position, mnemonicEnd - foundPos + 1);
+			mnemonic = html.substr(foundPos, mnemonicEnd + 1);
 
-			if (mnemonics.find(mnemonic) != mnemonics.end())
+			auto it = mnemonics.find(mnemonic);
+			if (it != mnemonics.end())
 			{
-				std::string findMnemonic = (*mnemonics.find(mnemonic)).second;
+				std::string findMnemonic = it->second;
 				result.append(findMnemonic);
-				position = position + mnemonic.length();
+				position = foundPos + mnemonic.length();
 			}
 			else
 			{

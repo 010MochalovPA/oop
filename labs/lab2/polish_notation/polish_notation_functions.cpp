@@ -1,9 +1,9 @@
 #include "polish_notation.h"
 #include <iostream>
 #include <sstream>
-#include <vector>
 
-//inputStream или input
+//inputStream пїЅпїЅпїЅ input
+
 int CalculatePolishExpressionFromStream(std::istream& inputStream)
 {
 	char ch;
@@ -11,7 +11,7 @@ int CalculatePolishExpressionFromStream(std::istream& inputStream)
 
 	if (ch != '(')
 	{
-		// либо runtime error или invalid argument
+		// пїЅпїЅпїЅпїЅ runtime error пїЅпїЅпїЅ invalid argument
 		throw std::runtime_error("ERROR");
 	}
 
@@ -50,11 +50,11 @@ int CalculatePolishExpressionFromStream(std::istream& inputStream)
 			throw std::runtime_error("ERROR");
 		}
 
-		int value; // TODO: лучше обьявлять переменные с учетом области видимости +
+		int value; // TODO: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ +
 
 		if (ch == '(')
 		{
-			value = CalculatePolishExpressionFromStream(inputStream); // TODO: порабоать с оптимизацией условий и кол-вом выходов из цикла +
+			value = CalculatePolishExpressionFromStream(inputStream); // TODO: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ-пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ +
 		}
 		else
 		{	
@@ -71,7 +71,7 @@ int CalculatePolishExpressionFromStream(std::istream& inputStream)
 
 	return result;
 }
-// возмоджно стоит назвать updateResult
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ updateResult
 void CalculateExpression(int& result, Operation operation, const int value)
 {
 	if (operation == Operation::ADDITION)
