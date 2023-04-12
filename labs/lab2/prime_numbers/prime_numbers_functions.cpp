@@ -33,9 +33,9 @@ std::set<int> GeneratePrimeNumbersSet(const int upperBound)
 		{
 			primeNumbers.insert(primeNumbers.end(), i);
 
-			for (int j = i + i; j <= upperBound; j += i) // тут, похоже, ошибка. Надо написать тест, который бы ее воспроизвел +
+			for (int j = i + i; j <= upperBound; j += i) // пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ +
 			{
-				// if (signPrime[j]) можно убрать +
+				// if (signPrime[j]) пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ +
 				signPrime[j] = false;
 			}
 		}

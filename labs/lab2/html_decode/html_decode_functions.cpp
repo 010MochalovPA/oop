@@ -1,7 +1,7 @@
 #include <map>
 #include <string>
 #include "html_decode_headers.h"
-// Обьявить как const ++
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ const ++
 const std::map<std::string, std::string> mnemonics = { 
 	{ "&quot;", "\"" },
 	{ "&apos;", "\'" },
@@ -11,7 +11,7 @@ const std::map<std::string, std::string> mnemonics = {
 };
 
 const size_t MAX_MNEMONIC_LENGTH = 5;
-//	если много амперсонов подряд. ТО ПРОГРАММА БУДЕТ работать медленно
+//	пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 std::string HtmlDecode(const std::string& html) 
 {
@@ -27,11 +27,9 @@ std::string HtmlDecode(const std::string& html)
 
 		if (foundPos != std::string::npos)
 		{
-
 			result.append(html, position, foundPos - position);
 
 			size_t lengthToEnd = html.length() - foundPos - 1;
-
 			size_t subStringEnd = std::min(lengthToEnd, MAX_MNEMONIC_LENGTH);
 
 			std::string subString = html.substr(foundPos, subStringEnd);
@@ -39,9 +37,16 @@ std::string HtmlDecode(const std::string& html)
 			position = foundPos;
 
 			size_t mnemonicEnd = subString.find(";");
-			
-			mnemonic = html.substr(position, mnemonicEnd);
-			
+
+			if (mnemonicEnd != std::string::npos)
+			{
+				mnemonic = subString.substr(0, mnemonicEnd);
+			}
+			else
+			{
+				mnemonic = subString;
+			}
+
 			if (mnemonics.find(mnemonic) != mnemonics.end())
 			{
 				std::string findMnemonic = (*mnemonics.find(mnemonic)).second;
@@ -51,14 +56,14 @@ std::string HtmlDecode(const std::string& html)
 			else
 			{
 				result.append("&");
-				position++;	
+				position++;
 			}
 		}
 		else
 		{
 			break;
-			// КАК будто можно выполнть аппенд сразу;
-			// МОЖНО СДЕЛАТЬ БРЕЙК
+			// пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ;
+			// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		}
 
 	}
