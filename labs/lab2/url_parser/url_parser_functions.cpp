@@ -26,7 +26,7 @@ bool ParseURL(std::string const& url, Protocol& protocol, unsigned int& port, st
 		
 		port = GetPortFromString(result[4], protocol);
 		
-		if (port == 0 || port > 65535)
+		if (port == 0 || port > 65535) // не проверяется граничные значения портов
 		{
 			return false;
 		}
@@ -67,6 +67,7 @@ int GetPortFromString(const std::string& port, const Protocol& protocol)
 {
 	if (port.empty())
 	{
+		// использовать static_cast
 		return (int)protocol;
 	}
 

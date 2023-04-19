@@ -52,6 +52,17 @@ TEST_CASE("Testing function ParseURL")
 	CHECK(url3.host == "www.mysite.com");
 	CHECK(url3.port == 443);
 	CHECK(url3.document == "/lang=en#title");
+
+	std::string line4 = "http://www.mysite.com:8080/";
+
+	URL url4 = { line4 };
+
+	CHECK(ParseURL(url4.url, url4.protocol, url4.port, url4.host, url4.document));
+	CHECK(url4.url == line4);
+	CHECK(url4.protocol == Protocol::HTTP);
+	CHECK(url4.host == "www.mysite.com");
+	CHECK(url4.port == 8080);
+	CHECK(url4.document == "/");
 }
 
 TEST_CASE("Testing Invalid URL")
@@ -64,15 +75,11 @@ TEST_CASE("Testing Invalid URL")
 	URL url2 = { line2 };
 	CHECK(!ParseURL(url2.url, url2.protocol, url2.port, url2.host, url2.document));
 
-	std::string line3 = "http://www.mysite.com///docs/document1.html?page=30&lang=en#title";
+	std::string line3 = "httpp://www.mysite.com/docs/document1.html?page=30&lang=en#title";
 	URL url3 = { line3 };
 	CHECK(!ParseURL(url3.url, url3.protocol, url3.port, url3.host, url3.document));
 
-	std::string line4 = "httpp://www.mysite.com/docs/document1.html?page=30&lang=en#title";
+	std::string line4 = "http:///www.mysite.com";
 	URL url4 = { line4 };
 	CHECK(!ParseURL(url4.url, url4.protocol, url4.port, url4.host, url4.document));
-
-	std::string line5 = "http:///www.mysite.com";
-	URL url5 = { line5 };
-	CHECK(!ParseURL(url5.url, url5.protocol, url5.port, url5.host, url5.document));
 }
