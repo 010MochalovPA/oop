@@ -1,23 +1,34 @@
 #include "CCar.h"
-
-bool CCar::IsTurnedOn() const
+// не стоит хранить m_direction ++
+// TurnOff разобраться почему Unknown command ++
+bool CCar::IsTurnedOn()
 {
 	return m_engineState;
 }
 
-CCar::Gear CCar::GetGear() const
+CCar::Gear CCar::GetGear()
 {
 	return m_gear;
 }
 
-int CCar::GetSpeed() const 
+int CCar::GetSpeed() 
 {
 	return m_speed;
 }
 
-CCar::Direction CCar::GetDirection() const
+CCar::Direction CCar::GetDirection()
 {
-	return m_direction;
+	if (m_speed < 0)
+	{
+		return CCar::Direction::BACK;
+	}
+
+	if (m_speed > 0)
+	{
+		return CCar::Direction::FORWARD;
+	}
+
+	return CCar::Direction::STAY;
 }
 
 bool CCar::TurnOnEngine()
@@ -35,8 +46,8 @@ bool CCar::TurnOffEngine()
 
 	return !m_engineState;
 }
-
-bool CCar::SetGear(const CCar::Gear& gear)
+// попробовать сделать метод покороче (не сильно получилось)
+bool CCar::SetGear(const Gear gear)
 {
 	if (gear == Gear::NEUTRAL)
 	{
@@ -49,19 +60,18 @@ bool CCar::SetGear(const CCar::Gear& gear)
 		return false;
 	}
 
-	if (gear == Gear::REVERSE && m_speed == 0)
-	{
-		m_gear = gear;
-		return true;
-	}
-
-	if (m_direction == Direction::FORWARD && gear == Gear::REVERSE)
+	if (gear != Gear::REVERSE && GetDirection() == Direction::BACK)
 	{
 		return false;
 	}
 
-	if (m_direction == Direction::BACK && gear != Gear::REVERSE)
+	if (gear == Gear::REVERSE)
 	{
+		if (m_speed == 0 || m_gear == Gear::REVERSE)
+		{
+			m_gear = gear;
+			return true;
+		}
 		return false;
 	}
 
@@ -83,23 +93,6 @@ bool CCar::SetGear(const CCar::Gear& gear)
 	return false;
 }
 
-void CCar::SetDirection()
-{
-	if (m_gear == Gear::REVERSE)
-	{
-		m_direction = Direction::BACK;
-		return;
-	}
-
-	if (m_speed == 0)
-	{
-		m_direction = Direction::STAY;
-		return;
-	}
-
-	m_direction = Direction::FORWARD;
-}
-
 bool CCar::SetSpeed(const int speed)
 {
 	if (!m_engineState)
@@ -109,6 +102,11 @@ bool CCar::SetSpeed(const int speed)
 
 	if (m_gear == Gear::NEUTRAL && speed != 0)
 	{
+		if (m_speed > speed && speed >= MIN_SPEED)
+		{
+			m_speed = speed;
+			return true;
+		}
 		return false;
 	}
 
@@ -123,8 +121,13 @@ bool CCar::SetSpeed(const int speed)
 
 	if (speed >= min && speed <= max)
 	{
+		if (m_gear == CCar::Gear::REVERSE)
+		{
+			m_speed = -speed;
+			return true;
+		}
+		
 		m_speed = speed;
-		CCar::SetDirection();
 		return true;
 	}
 

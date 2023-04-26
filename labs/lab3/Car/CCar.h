@@ -1,10 +1,13 @@
 #pragma once
 #include "stdafx.h"
 
+const int MAX_SPEED = 150;
+const int MIN_SPEED = 0;
+
 class CCar
 {
 public:
-	const enum class Gear {
+	enum class Gear {
 		REVERSE = -1,
 		NEUTRAL,
 		FIRST,
@@ -14,21 +17,25 @@ public:
 		FIFTH,
 	};
 
-	const enum class Direction {
+	enum class Direction {
 		FORWARD,
 		BACK,
 		STAY,
 	};
 
+	// можно присвоить значения полям ++
+
 	bool TurnOnEngine();
 	bool TurnOffEngine();
-	bool SetGear(const Gear& gear);
+	// не использовать конст ++
+	// enum передаем по знгачению ++
+	bool SetGear(const Gear gear);
 	bool SetSpeed(const int speed);
 
-	bool IsTurnedOn() const;
-	Direction GetDirection() const;
-	int GetSpeed() const;
-	Gear GetGear() const;
+	bool IsTurnedOn();
+	Direction GetDirection();
+	int GetSpeed();
+	Gear GetGear();
 
 private:
 	const struct SpeedRange
@@ -39,12 +46,9 @@ private:
 
 	using GearRanges = std::map<Gear, SpeedRange>;
 
-	int m_speed = 0;
-	Gear m_gear = Gear::NEUTRAL;
-	bool m_engineState = false;
-	Direction m_direction = Direction::STAY;
-	void SetDirection();
-	GearRanges m_gearRanges = { 
+	// поля класса лучше перекинуть вниз ++
+	// сделать поле статическим и константным ++
+	const static inline CCar::GearRanges m_gearRanges = { 
 		{ Gear::REVERSE, { 0, 20 } },
 		{ Gear::NEUTRAL, { 0, 150 } },
 		{ Gear::FIRST, { 0, 30 } },
@@ -53,4 +57,8 @@ private:
 		{ Gear::FOURTH, { 40, 90 } },
 		{ Gear::FIFTH, { 50, 150 } }
 	};
+
+	int m_speed = 0;
+	Gear m_gear = Gear::NEUTRAL;
+	bool m_engineState = false;
 };

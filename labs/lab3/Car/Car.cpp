@@ -4,8 +4,10 @@
 
 int main()
 {
+	// не должгл быть можно включить заднюю передачу не остановившись
 	CCar car;
 	CCarApp carApp(car, std::cin, std::cout);
+
 	while (!std::cin.eof() && !std::cin.fail())
 	{
 		std::cout << "> ";

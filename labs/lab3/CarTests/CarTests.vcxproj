@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f6c69072-4e64-4b6e-a825-59f52f9d3a0a}</ProjectGuid>
-    <RootNamespace>Car</RootNamespace>
+    <ProjectGuid>{eaca9135-0ce0-43b8-b09a-e719b4c03645}</ProjectGuid>
+    <RootNamespace>CarTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -131,17 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Car.cpp" />
-    <ClCompile Include="CCar.cpp" />
-    <ClCompile Include="CCarApp.cpp" />
+    <ClCompile Include="..\Car\CCar.cpp" />
+    <ClCompile Include="CarTests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CCar.h" />
-    <ClInclude Include="CCarApp.h" />
-    <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Car\CCar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

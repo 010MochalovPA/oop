@@ -5,11 +5,11 @@ CCarApp::CCarApp(CCar& car, std::istream& input, std::ostream& output)
 	, m_input(input)
 	, m_output(output)
 	, m_actionMap({ 
-		  { "Info", [this](const int args) { return Info(args); } },
-		  { "EngineOn", [this](const int args) { return EngineOn(args); } },
-		  { "EngineOff", [this](const int args) { return EngineOff(args); } },
-		  { "SetGear", [this](const int args) { return SetGear(args); } },
-		  { "SetSpeed", [this](const int args) { return SetSpeed(args); } }
+		  { "Info", [this](const int arg) { return Info(arg); } },
+		  { "EngineOn", [this](const int arg) { return EngineOn(arg); } },
+		  { "EngineOff", [this](const int arg) { return EngineOff(arg); } },
+		  { "SetGear", [this](const int arg) { return SetGear(arg); } },
+		  { "SetSpeed", [this](const int arg) { return SetSpeed(arg); } }
 		})
 {
 }
@@ -23,19 +23,19 @@ bool CCarApp::HandleCommand()
 	std::string action;
 	isstream >> action;
 
-	int args = isstream >> args ? args : 0;
+	int arg = isstream >> arg ? arg : 0;
 
 	auto it = m_actionMap.find(action);
 	if (it != m_actionMap.end())
 	{
-		return it->second(args);
+		return it->second(arg);
 	}
 
 	return false;
 }
 	
 
-bool CCarApp::EngineOn(const int /*args*/)
+bool CCarApp::EngineOn(const int /*arg*/)
 {
 	if (m_car.TurnOnEngine())
 	{
@@ -47,9 +47,9 @@ bool CCarApp::EngineOn(const int /*args*/)
 	return false;
 }
 
-bool CCarApp::EngineOff(const int /*args*/)
+bool CCarApp::EngineOff(const int /*arg*/)
 {
-	if (m_car.TurnOffEngine())
+	if (m_car.TurnOnEngine())
 	{
 		m_output << "Engine turn off was successful" << std::endl;
 		return true;
@@ -59,21 +59,12 @@ bool CCarApp::EngineOff(const int /*args*/)
 	return false;
 }
 
-bool CCarApp::Info(const int /*args*/)
+bool CCarApp::Info(const int /*arg*/)
 {
-	m_output << "         ⢀⣠⠤⠖⠒⠛⠛⠋⠉⠉⠉⠉⠉⠉⣹⣻⠭⠿⢿⡷⠦⣤⡀    " << std::endl;
-	m_output << "      ⢀⣤⠖⠋            ⣼⣳⢯  ⠈⢷⠄⠸⣟⣆   " << std::endl;
-	m_output << "   ⢀⣰⠶⠿⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠒⢒⣶⠞⢡⡏⢸⣾⣉⣉⣽⣆⣀⣹⠾⣧  " << std::endl;
-	m_output << " ⢀⠞⡏⠁          ⢀⡤⡖⠋⢹⢹⠐⠛⠋⠉⠉⠉⠉⢀⣼⡆ ⠰⠞⡇ " << std::endl;
-	m_output << "⢀⡾⠾⠷⠲⣶⣶⣶⣶⣶⣶⣶⠶⠒⠾⠷⠛⠓⠋⠉⠉⣳⣄⣤⡀    ⠁⡇   ⢷⡀" << std::endl;
-	m_output << "⢸⠒⠒⠒           ⠐⠒⠚⠛⠉⠉⢩⣿⣿⣷    ⠘⡇  ⣴⣿⡇" << std::endl;
-	m_output << "⢸⠺⡗⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄ ⠿⡏⠽⠟  ⣿⣿⣿⣿⡆⠴⠶⠶⠖⠓⠂ ⣿⣿⡇" << std::endl;
-	m_output << "⠸⣧⣤⣤⣭⣭⣭⣭⣭⣭⣭⣭⣭⣤⣤⣤⣤⣤⣄⣠⣤⣿⣻⣿⣿⣧⣤⣤⣤⣤⣤⣤⣬⣿⣿⠇" << std::endl;
-	m_output << "⠈⠻⣿⣿⡿⠟⠁       ⠘⠿⠿⠿⠙⢿⣿⣿⡿⠏      ⠻⣿⣿⠟  " << std::endl;
 	m_output << " State Engine is: " << (m_car.IsTurnedOn() ? "on" : "off") << std::endl;
 	m_output << " Speed is: "<< m_car.GetSpeed() << std::endl;
 	m_output << " Gear is: " << ConvertGearToInt(m_car.GetGear()) << std::endl;
-	m_output << " direction is: " << ConvertDirectionToString(m_car.GetDirection()) << std::endl;
+	m_output << " Direction is: " << ConvertDirectionToString(m_car.GetDirection()) << std::endl;
 
 	return true;
 }
@@ -128,14 +119,14 @@ bool CCarApp::SetGear(const int arg)
 	return true;
 }
 
-bool CCarApp::SetSpeed(const int args)
+bool CCarApp::SetSpeed(const int arg)
 {
-	if (m_car.SetSpeed(args))
+	if (m_car.SetSpeed(arg))
 	{
-		m_output << "Current speed is " << args << std::endl;
+		m_output << "Current speed is " << arg << std::endl;
 		return true;
 	}
-	m_output << "Set speed was falled!" << args << std::endl;
+	m_output << "Set speed was falled!" << std::endl;
 	return true;
 }
 

@@ -9,21 +9,20 @@ public:
 	bool HandleCommand();
 
 private:
-	bool Info(const int args);
-	bool EngineOn(const int args);
-	bool EngineOff(const int args);
-	bool SetGear(const int args);
-	bool SetSpeed(const int args);
+	bool Info(const int arg);
+	bool EngineOn(const int arg);
+	bool EngineOff(const int arg);
+	bool SetGear(const int arg);
+	bool SetSpeed(const int arg);
 	int ConvertGearToInt(const CCar::Gear& gear);
 	CCar::Gear ConvertIntToGear(const int gear);
 	std::string ConvertDirectionToString(const CCar::Direction& d);
 
-	using Handler = std::function<bool(int args)>;
-
+	using Handler = std::function<bool(int arg)>;
 	using ActionMap = std::map<std::string, Handler>;
+	const ActionMap m_actionMap;
 
 	CCar& m_car;
 	std::istream& m_input;
 	std::ostream& m_output;
-	const ActionMap m_actionMap;
 };
