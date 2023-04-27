@@ -1,6 +1,6 @@
 #include "CCar.h"
-// не стоит хранить m_direction ++
-// TurnOff разобраться почему Unknown command ++
+// РЅРµ СЃС‚РѕРёС‚ С…СЂР°РЅРёС‚СЊ m_direction ++
+// TurnOff СЂР°Р·РѕР±СЂР°С‚СЊСЃСЏ РїРѕС‡РµРјСѓ Unknown command ++
 bool CCar::IsTurnedOn()
 {
 	return m_engineState;
@@ -46,7 +46,7 @@ bool CCar::TurnOffEngine()
 
 	return !m_engineState;
 }
-// попробовать сделать метод покороче (не сильно получилось)
+// РїРѕРїСЂРѕР±РѕРІР°С‚СЊ СЃРґРµР»Р°С‚СЊ РјРµС‚РѕРґ РїРѕРєРѕСЂРѕС‡Рµ (РїРѕР»СѓС‡РёР»РѕСЃСЊ РЅРµ СЃРёР»СЊРЅРѕ РєРѕСЂРѕС‡Рµ)
 bool CCar::SetGear(const Gear gear)
 {
 	if (gear == Gear::NEUTRAL)
