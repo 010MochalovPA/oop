@@ -110,6 +110,14 @@ TEST_CASE("Creating functions")
 			REQUIRE(std::isnan(calc.GetIdentifierValue("f1")));
 		}
 	
+		WHEN("incorrect create fn")
+		{
+			CCalculator::Function func4 = { "f", "z", "c", CCalculator::OPERATION::Addition };
+			REQUIRE(!calc.CreateFunction("f", func4));
+			CCalculator::Function func5 = { "f", "zz", "0", CCalculator::OPERATION::Addition };
+			REQUIRE(!calc.CreateFunction("f1", func5));
+		}
+
 		WHEN("changing variable")
 		{
 			REQUIRE(calc.CreateLet("y", "8.20"));

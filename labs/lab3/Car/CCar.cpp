@@ -33,6 +33,7 @@ CCar::Direction CCar::GetDirection()
 
 bool CCar::TurnOnEngine()
 {
+	//TODO: лучше проверять состояние включенности и в случае включенного двигаетля выходить
 	m_engineState = true;
 	return m_engineState;
 }
@@ -48,7 +49,7 @@ bool CCar::TurnOffEngine()
 }
 // попробовать сделать метод покороче (получилось не сильно короче)
 bool CCar::SetGear(const Gear gear)
-{
+{//TODO: разделить на методы
 	if (gear == Gear::NEUTRAL)
 	{
 		m_gear = gear;

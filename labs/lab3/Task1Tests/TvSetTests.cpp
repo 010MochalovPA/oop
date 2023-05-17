@@ -1,11 +1,6 @@
 ﻿#include "stdafx.h"
 #include "../Task1/TVSet.h"
 
-/*
-Телевизор
-	изначально выключен
-*/
-
 struct TVSetFixture
 {
 	CTVSet tv;

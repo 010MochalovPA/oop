@@ -13,7 +13,10 @@ CCalculatorApp::CCalculatorApp(CCalculator& calculator, std::istream& input, std
 		  { "printfns", [this](const std::string& args) { return PrintFunctions(args); } },
 		  { "help", [this](const std::string& args) { return Help(args); } } })
 {
-}
+}//TODO: Unknown command! заменить на осмысленный текст ошибки
+//TODO: > fn woo = a / 0
+//		> print woo
+//		woo : -inf
 
 bool CCalculatorApp::HandleCommand()
 {
@@ -51,7 +54,7 @@ bool CCalculatorApp::CreateLet(const std::string& args)
 {
 	CCalculator::Function func = ParseArgs(args);
 
-	if (func.name.empty())
+	if (func.name.empty() || func.operand1.empty())
 	{
 		return false;
 	}
@@ -78,8 +81,6 @@ bool CCalculatorApp::PrintVariables(const std::string& /*args*/)
 	
 	for (auto var : variables)
 	{
-		;
-
 		if (std::isnan(var.second))
 		{
 			m_output << var.first << " : nan" << std::endl;
@@ -135,7 +136,7 @@ bool CCalculatorApp::PrintIdentifier(const std::string& args)
 	return true;
 }
 
-CCalculator::Function CCalculatorApp::ParseArgs(const std::string& input)
+CCalculator::Function CCalculatorApp::ParseArgs(const std::string& input)//TODO: не понятно что возвращаем и запрашиваем
 {
 	CCalculator::Function func = { "", "0", "0", CCalculator::OPERATION::Addition };
 	std::stringstream stream(input);
@@ -189,12 +190,12 @@ CCalculator::Function CCalculatorApp::ParseArgs(const std::string& input)
 
 bool CCalculatorApp::Help(const std::string& /*args*/) const
 {
-	m_output << "• var <identifier> " << std::endl
-			 << "• let <identifier1> = <floating point number> or let<identifier1> = <identifier2>" << std::endl
-			 << "• fn <identifier1> = <identifier2> or fn<identifier1> = <identifier2><operation><identifier3>" << std::endl
-			 << "• print <identifier>" << std::endl
-			 << "• printvars" << std::endl
-			 << "• printfns" << std::endl;
+	m_output << "- var <identifier> " << std::endl
+			 << "- let <identifier1> = <floating point number> or let<identifier1> = <identifier2>" << std::endl
+			 << "- fn <identifier1> = <identifier2> or fn<identifier1> = <identifier2><operation><identifier3>" << std::endl
+			 << "- print <identifier>" << std::endl
+			 << "- printvars" << std::endl
+			 << "- printfns" << std::endl;
 
 	return true;
 }

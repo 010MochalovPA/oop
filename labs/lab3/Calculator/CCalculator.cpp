@@ -3,6 +3,7 @@
 
 bool CCalculator::IsValidName(const std::string& name)
 {
+	//TODO: use REGEXP
 	if (name.empty() || std::isdigit(name[0]))
 	{
 		return false;
@@ -19,7 +20,7 @@ bool CCalculator::IsValidName(const std::string& name)
 	return true;
 }
 
-bool CCalculator::IsValidIdentifier(const std::string& name)
+bool CCalculator::IsValidIdentifier(const std::string& name)//TODO: rename or разделить ф-ии по разным хонам ответственности
 {
 	if (m_variables.contains(name) || m_functions.contains(name))
 	{
@@ -38,7 +39,7 @@ bool CCalculator::IsValidIdentifier(const std::string& name)
 	return true;
 }
 
-bool CCalculator::IsUsed(const std::string& name)
+bool CCalculator::IsUsed(const std::string& name)//TODO: rename isExists
 {
 	if (m_variables.contains(name) || m_functions.contains(name))
 	{
@@ -90,7 +91,7 @@ bool CCalculator::EditVar(const std::string& name, const std::string& value)
 	return true;
 }
 
-bool CCalculator::CreateLet(const std::string& name, const std::string& value)
+bool CCalculator::CreateLet(const std::string& name, const std::string& value)//TODO: rename, внутри мы и создаем и редактируем, а снаружи говорим, что только создаем
 {
 	if (!IsValidName(name) || !IsValidIdentifier(value))
 	{
@@ -116,7 +117,7 @@ bool CCalculator::CreateFunction(const std::string& name, const Function& func)
 		return false;
 	}
 	
-	if (!IsValidIdentifier(func.operand1))
+	if (!IsValidIdentifier(func.operand1) || !IsValidIdentifier(func.operand2))
 	{
 		return false;
 	}
