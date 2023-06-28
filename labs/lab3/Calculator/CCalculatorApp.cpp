@@ -47,24 +47,26 @@ bool CCalculatorApp::CreateVar(const std::string& args)
 		return false;
 	}
 
-	return m_calculator.CreateVar(func.name);
+	return m_calculator.CreateVar(func.name, "NAN");
 }
 
 bool CCalculatorApp::CreateLet(const std::string& args)
 {
-	CCalculator::Function func = ParseArgs(args);
+	return true;
+	/*CCalculator::Function func = ParseArgs(args);
 
 	if (func.name.empty() || func.operand1.empty())
 	{
 		return false;
 	}
 
-	return m_calculator.CreateLet(func.name, func.operand1);
+	return m_calculator.CreateLet(func.name, func.operand1);*/
 }
 
 bool CCalculatorApp::CreateFunction(const std::string& args)
 {
-	CCalculator::Function func = ParseArgs(args);
+	return true;
+	/*CCalculator::Function func = ParseArgs(args);
 	if (func.name.empty())
 	{
 		return false;
@@ -72,22 +74,22 @@ bool CCalculatorApp::CreateFunction(const std::string& args)
 
 	CCalculator::Function function = { func.name, func.operand1, func.operand2, func.operation };
 
-	return m_calculator.CreateFunction(func.name, function);
+	return m_calculator.CreateFunction(func.name, function);*/
 }
 
 bool CCalculatorApp::PrintVariables(const std::string& /*args*/)
 {
-	std::map<std::string, double> variables = m_calculator.GetVariables();
+	std::map<std::string, CVariable> variables = m_calculator.GetVariables();
 	
 	for (auto var : variables)
 	{
-		if (std::isnan(var.second))
+		if (std::isnan(var.second.GetValue()))
 		{
 			m_output << var.first << " : nan" << std::endl;
 		}
 		else
 		{
-			m_output << var.first << " : " << std::fixed << std::setprecision(2) << var.second << std::endl;
+			m_output << var.first << " : " << std::fixed << std::setprecision(2) << var.second.GetValue() << std::endl;
 		}
 	}
 
@@ -96,7 +98,8 @@ bool CCalculatorApp::PrintVariables(const std::string& /*args*/)
 
 bool CCalculatorApp::PrintFunctions(const std::string& /*args*/)
 {
-	std::map<std::string, double> functions = m_calculator.GetFunctions();
+	return true;
+	/*std::map<std::string, double> functions = m_calculator.GetFunctions();
 	
 	for (const auto func : functions)
 	{
@@ -110,12 +113,13 @@ bool CCalculatorApp::PrintFunctions(const std::string& /*args*/)
 		}
 	}
 
-	return true;
+	return true;*/
 }
 
 bool CCalculatorApp::PrintIdentifier(const std::string& args)
 {
-	CCalculator::Function func = ParseArgs(args);
+	return true;
+	/*CCalculator::Function func = ParseArgs(args);
 	if (func.name.empty())
 	{
 		return false;
@@ -133,7 +137,7 @@ bool CCalculatorApp::PrintIdentifier(const std::string& args)
 		m_output << name << " : " << std::fixed << std::setprecision(2) << value << std::endl;
 	}
 
-	return true;
+	return true;*/
 }
 
 CCalculator::Function CCalculatorApp::ParseArgs(const std::string& input)//TODO: не понятно что возвращаем и запрашиваем

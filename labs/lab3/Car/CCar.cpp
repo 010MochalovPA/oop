@@ -33,7 +33,6 @@ CCar::Direction CCar::GetDirection()
 
 bool CCar::TurnOnEngine()
 {
-	//TODO: лучше проверять состояние включенности и в случае включенного двигаетля выходить
 	m_engineState = true;
 	return m_engineState;
 }

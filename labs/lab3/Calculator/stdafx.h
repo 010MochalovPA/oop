@@ -11,3 +11,7 @@
 #include <optional>
 #include <iomanip>
 #include <unordered_set>
+
+#include "CCalculator.h"
+#include "CValue.h"
+#include "CVariable.h"

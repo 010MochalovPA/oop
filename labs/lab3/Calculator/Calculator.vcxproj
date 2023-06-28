@@ -134,10 +134,14 @@
     <ClCompile Include="Calculator.cpp" />
     <ClCompile Include="CCalculator.cpp" />
     <ClCompile Include="CCalculatorApp.cpp" />
+    <ClCompile Include="CValue.cpp" />
+    <ClCompile Include="CVariable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCalculator.h" />
     <ClInclude Include="CCalculatorApp.h" />
+    <ClInclude Include="CValue.h" />
+    <ClInclude Include="CVariable.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

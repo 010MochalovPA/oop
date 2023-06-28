@@ -135,7 +135,6 @@
     <ClCompile Include="..\Car\CCarApp.cpp" />
     <ClCompile Include="CarTests.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Task2Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
