@@ -129,13 +129,3 @@ bool CCarApp::SetSpeed(const int arg)
 	m_output << "Set speed was falled!" << std::endl;
 	return true;
 }
-
-
-
-
-
-
-
-
-
-

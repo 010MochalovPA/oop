@@ -10,9 +10,9 @@ public:
 
 private:
 
-	CCalculator::Function ParseArgs(const std::string& input);
+	CCalculator::Expression ParseArgs(const std::string& input);
 	bool CreateVar(const std::string& args);
-	bool CreateLet(const std::string& args);
+	bool AssignLet(const std::string& args);
 	bool CreateFunction(const std::string& args);
 	bool PrintVariables(const std::string& args);
 	bool PrintFunctions(const std::string& args);

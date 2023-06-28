@@ -14,7 +14,7 @@ public:
 		Difference = '-'
 	};
 
-	using Function = struct
+	using Expression = struct
 	{
 		std::string name;
 		std::string operand1;
@@ -31,14 +31,17 @@ public:
 	bool IsValidName(const std::string& name);
 	bool IsValidIdentifier(const std::string& name);
 	bool IsExists(const std::string& name);
-	std::optional<CVariable> GetValue(const std::string& name);
+	CVariable GetIdentifier(const std::string& name);
+	//CFunction GetIdentifier(const std::string& name);
 	bool CreateVar(const std::string& name, const std::string& value);
+	bool EditVar(const std::string& name, const std::string& value);
+	bool AssignLet(const std::string& name, const std::string& value);
 	std::map<std::string, CVariable> GetVariables();
-	//std::map<std::string, double> GetFunctions();
+	std::map<std::string, double> GetFunctions();
 
 private:
 
 
 	std::map<std::string, CVariable> m_variables;
-	std::map<std::string, CValue> m_functions;
+	std::map<std::string, double> m_functions;
 };

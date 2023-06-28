@@ -6,7 +6,7 @@ CCalculatorApp::CCalculatorApp(CCalculator& calculator, std::istream& input, std
 	, m_input(input)
 	, m_output(output)
 	, m_actionMap({ { "var", [this](const std::string& args) { return CreateVar(args); } },
-		  { "let", [this](const std::string& args) { return CreateLet(args); } },
+		  { "let", [this](const std::string& args) { return AssignLet(args); } },
 		  { "fn", [this](const std::string& args) { return CreateFunction(args); } },
 		  { "print", [this](const std::string& args) { return PrintIdentifier(args); } },
 		  { "printvars", [this](const std::string& args) { return PrintVariables(args); } },
@@ -41,26 +41,25 @@ bool CCalculatorApp::HandleCommand()
 
 bool CCalculatorApp::CreateVar(const std::string& args)
 {
-	CCalculator::Function func = ParseArgs(args);
-	if (func.name.empty())
+	CCalculator::Expression expr = ParseArgs(args);
+	if (expr.name.empty())
 	{
 		return false;
 	}
 
-	return m_calculator.CreateVar(func.name, "NAN");
+	return m_calculator.CreateVar(expr.name, "NAN");
 }
 
-bool CCalculatorApp::CreateLet(const std::string& args)
+bool CCalculatorApp::AssignLet(const std::string& args)
 {
-	return true;
-	/*CCalculator::Function func = ParseArgs(args);
+	CCalculator::Expression func = ParseArgs(args);
 
 	if (func.name.empty() || func.operand1.empty())
 	{
 		return false;
 	}
 
-	return m_calculator.CreateLet(func.name, func.operand1);*/
+	return m_calculator.AssignLet(func.name, func.operand1);
 }
 
 bool CCalculatorApp::CreateFunction(const std::string& args)
@@ -140,9 +139,9 @@ bool CCalculatorApp::PrintIdentifier(const std::string& args)
 	return true;*/
 }
 
-CCalculator::Function CCalculatorApp::ParseArgs(const std::string& input)//TODO: не понятно что возвращаем и запрашиваем
+CCalculator::Expression CCalculatorApp::ParseArgs(const std::string& input)//TODO: не понятно что возвращаем и запрашиваем
 {
-	CCalculator::Function func = { "", "0", "0", CCalculator::OPERATION::Addition };
+	CCalculator::Expression func = { "", "0", "0", CCalculator::OPERATION::Addition };
 	std::stringstream stream(input);
 
 	stream >> func.name;

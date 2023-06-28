@@ -5,22 +5,14 @@
 class CVariable : public CValue
 {
 public:
-	CVariable(std::string name, double value)
+	CVariable(const double value)
 	{
-		m_name = name;
 		m_value = value;
-		m_links = {};
 	}
 
-	void AddLink(std::string name, CValue function)
-	{
-		m_links.insert(std::pair<std::string, CValue>(name, function));	
-	}
-
-	double GetValue() override;
+	void SetValue(double const value);
+	double GetValue() const override;
 
 private:
-	std::string m_name;
 	double m_value;
-	std::map<std::string, CValue> m_links;
 };

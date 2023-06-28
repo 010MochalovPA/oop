@@ -3,18 +3,34 @@
 
 bool CCalculator::CreateVar(const std::string& name, const std::string& value)
 {
-	std::optional<CValue> newValue = GetValue(value);
-
-	if (newValue.has_value())
+	if (value == "NAN")
 	{
-		CVariable newVariable{ name, newValue.value().GetValue() };
-		m_variables.insert(std::pair<std::string, CVariable>(name, newVariable));
+		m_variables.insert(std::pair<std::string, CVariable>(name, { NAN }));
 		return true;
 	}
 	else
 	{
-		CVariable newVariable{ name, value == "NAN" ? NAN : stod(value) };
-		m_variables.insert(std::pair<std::string, CVariable>(name, newVariable));
+		m_variables.insert(std::pair<std::string, CVariable>(name, { stod(value) }));
+		return true;
+	}
+}
+
+bool CCalculator::EditVar(const std::string& name, const std::string& value)
+{
+	m_variables.at(name) = stod(value);
+	return true;
+}
+
+bool CCalculator::AssignLet(const std::string& name, const std::string& value)
+{
+	if (IsExists(name))
+	{
+		EditVar(name, value);
+		return true;
+	}
+	else
+	{
+		CreateVar(name, value);
 		return true;
 	}
 }
@@ -22,6 +38,11 @@ bool CCalculator::CreateVar(const std::string& name, const std::string& value)
 std::map<std::string, CVariable> CCalculator::GetVariables()
 {
 	return m_variables;
+}
+
+std::map<std::string, double> CCalculator::GetFunctions()
+{
+	return m_functions;
 }
 
 bool CCalculator::IsValidName(const std::string& name)
@@ -45,7 +66,7 @@ bool CCalculator::IsValidName(const std::string& name)
 
 bool CCalculator::IsValidIdentifier(const std::string& name)
 {
-	if (m_variables.contains(name))// || m_functions.contains(name))
+	if (m_variables.contains(name) || m_functions.contains(name))
 	{
 		return true;
 	}
@@ -64,7 +85,7 @@ bool CCalculator::IsValidIdentifier(const std::string& name)
 
 bool CCalculator::IsExists(const std::string& name) 
 {
-	if (m_variables.contains(name))// || m_functions.contains(name))
+	if (m_variables.contains(name) || m_functions.contains(name))
 	{
 		return true;
 	}
@@ -72,13 +93,11 @@ bool CCalculator::IsExists(const std::string& name)
 	return false;
 }
 
-std::optional<CVariable> CCalculator::GetValue(const std::string& name)
+
+CVariable CCalculator::GetIdentifier(const std::string& name)
 {
-	std::optional<CVariable> value;
 	if (m_variables.contains(name))
 	{
-		value = m_variables.find(name)->second;
+		return m_variables.find(name)->second;
 	}
-
-	return { value };	
 }

@@ -13,5 +13,6 @@
 #include <unordered_set>
 
 #include "CCalculator.h"
-#include "CValue.h"
 #include "CVariable.h"
+#include "CFunction.h"
+#include "CValue.h"

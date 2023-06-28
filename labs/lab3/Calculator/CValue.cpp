@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "CValue.h"
 
-double CValue::GetValue()
+double CValue::GetValue() const
 {
 	return m_value;
 }

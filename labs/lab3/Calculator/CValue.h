@@ -5,7 +5,7 @@
 class CValue
 {
 public:
-	virtual double GetValue();
+	virtual double GetValue() const;
 
 private:
 	double m_value;
