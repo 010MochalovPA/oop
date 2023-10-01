@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3dde548f-6b21-4ee9-9377-4ad9cd7a57bf}</ProjectGuid>
+    <ProjectGuid>{8A58FD74-95EF-45BA-A5A4-1033612DBAA8}</ProjectGuid>
     <RootNamespace>CalculatorTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -139,16 +139,17 @@
     <ClCompile Include="CalculatorTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="..\Calculator\AdditionalStruct.h" />
     <ClInclude Include="..\Calculator\BinaryFunction.h" />
     <ClInclude Include="..\Calculator\Calculator.h" />
     <ClInclude Include="..\Calculator\CalculatorApp.h" />
     <ClInclude Include="..\Calculator\IValue.h" />
     <ClInclude Include="..\Calculator\stdafx.h" />
+    <ClInclude Include="..\Calculator\UnaryFunction.h" />
     <ClInclude Include="..\Calculator\Variable.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

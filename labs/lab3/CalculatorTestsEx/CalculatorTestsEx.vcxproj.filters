@@ -18,10 +18,10 @@
     <ClCompile Include="CalculatorTests.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\Calculator\Calculator.cpp">
+    <ClCompile Include="..\Calculator\BinaryFunction.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\Calculator\BinaryFunction.cpp">
+    <ClCompile Include="..\Calculator\Calculator.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="..\Calculator\CalculatorApp.cpp">
@@ -35,13 +35,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Calculator\Calculator.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="..\Calculator\AdditionalStruct.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="..\Calculator\BinaryFunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Calculator\Calculator.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="..\Calculator\CalculatorApp.h">
@@ -53,11 +56,11 @@
     <ClInclude Include="..\Calculator\stdafx.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="..\Calculator\UnaryFunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
     <ClInclude Include="..\Calculator\Variable.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

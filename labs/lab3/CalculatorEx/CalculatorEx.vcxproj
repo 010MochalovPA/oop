@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3dde548f-6b21-4ee9-9377-4ad9cd7a57bf}</ProjectGuid>
-    <RootNamespace>CalculatorTests</RootNamespace>
+    <ProjectGuid>{95CD1FD4-BED2-433C-9CDF-5324C0ED345F}</ProjectGuid>
+    <RootNamespace>Calculator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -131,24 +131,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Calculator\BinaryFunction.cpp" />
-    <ClCompile Include="..\Calculator\Calculator.cpp" />
-    <ClCompile Include="..\Calculator\CalculatorApp.cpp" />
-    <ClCompile Include="..\Calculator\UnaryFunction.cpp" />
-    <ClCompile Include="..\Calculator\Variable.cpp" />
-    <ClCompile Include="CalculatorTests.cpp" />
+    <ClCompile Include="BasicFunction.cpp" />
+    <ClCompile Include="BinaryFunction.cpp" />
+    <ClCompile Include="CalculatorMain.cpp" />
+    <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="CalculatorApp.cpp" />
+    <ClCompile Include="UnaryFunction.cpp" />
+    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Calculator\AdditionalStruct.h" />
-    <ClInclude Include="..\Calculator\BinaryFunction.h" />
-    <ClInclude Include="..\Calculator\Calculator.h" />
-    <ClInclude Include="..\Calculator\CalculatorApp.h" />
-    <ClInclude Include="..\Calculator\IValue.h" />
-    <ClInclude Include="..\Calculator\stdafx.h" />
-    <ClInclude Include="..\Calculator\Variable.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
+    <ClInclude Include="AdditionalStruct.h" />
+    <ClInclude Include="BasicFunction.h" />
+    <ClInclude Include="BinaryFunction.h" />
+    <ClInclude Include="Calculator.h" />
+    <ClInclude Include="CalculatorApp.h" />
+    <ClInclude Include="IValue.h" />
+    <ClInclude Include="IValueObserver.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UnaryFunction.h" />
+    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

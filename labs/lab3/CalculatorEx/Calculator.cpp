@@ -1,5 +1,10 @@
 #include "Calculator.h"
 
+//namespace
+//{
+//
+//}
+
 bool Calculator::CreateVar(const std::string& name, const std::string& value)
 {
 	if (IsExists(name))
@@ -139,8 +144,8 @@ std::map<std::string, double> Calculator::GetFunctions()
 	std::map<std::string, double> functionValues {};
 	for (auto &func: m_functions)
 	{
-		UnaryFunction f = func.second.get();
-		const double value = f.Get();
+		auto f = func.second.get();
+		const double value = f->Get();
 
 		functionValues[func.first] = value;
 	}
@@ -148,19 +153,14 @@ std::map<std::string, double> Calculator::GetFunctions()
 	return functionValues;
 }
 
-bool Calculator::IsValidName(const std::string& name) 	// TODO: use REGEXP +++
+bool Calculator::IsValidName(const std::string& name) 	// TODO: use REGEXP +++  // TODO: move to namespace
 {
-	if (std::regex_match(name, std::regex("^[a-zA-Z]+[0-9a-zA-Z]*$")))
-	{
-		return true;
-	}
-
-	return false;
+	return std::regex_match(name, std::regex("^[a-zA-Z]+[0-9a-zA-Z]*$"));
 }
 
 bool Calculator::IsExists(const std::string& name) 
 {
-	if (m_variables.contains(name) || m_functions.contains(name))
+	if (m_variables.contains(name) || m_functions.contains(name)) // TODO:  simplify
 	{
 		return true;
 	}
@@ -168,14 +168,9 @@ bool Calculator::IsExists(const std::string& name)
 	return false;
 }
 
-bool Calculator::IsNumber(const std::string& value)
+bool Calculator::IsNumber(const std::string& value) // TODO: move to namespace
 {
-	if (std::regex_match(value, std::regex("^[-+]?(0|[1-9]\\d*)([.]\\d+)?$")))
-	{
-		return true;
-	}
-
-	return false;
+	return std::regex_match(value, std::regex("^[-+]?(0|[1-9]\\d*)([.]\\d+)?$"));
 }
 
 double Calculator::GetIdentifierValue(const std::string& name)
@@ -185,8 +180,8 @@ double Calculator::GetIdentifierValue(const std::string& name)
 		return m_variables.find(name)->second.Get();
 	}
 
-	const UnaryFunction func = m_functions.find(name)->second.get();
-	return func.Get();
+	auto func = m_functions.find(name)->second.get();
+	return func->Get();
 }
 
 bool Calculator::IsIdentifier(const std::string& name)

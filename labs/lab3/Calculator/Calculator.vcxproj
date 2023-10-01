@@ -131,20 +131,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryFunction.cpp" />
+    <ClCompile Include="CalculatorMain.cpp" />
     <ClCompile Include="Calculator.cpp" />
-    <ClCompile Include="CCalculator.cpp" />
-    <ClCompile Include="CCalculatorApp.cpp" />
-    <ClCompile Include="CFunction.cpp" />
-    <ClCompile Include="CValue.cpp" />
-    <ClCompile Include="CVariable.cpp" />
+    <ClCompile Include="CalculatorApp.cpp" />
+    <ClCompile Include="UnaryFunction.cpp" />
+    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CCalculator.h" />
-    <ClInclude Include="CCalculatorApp.h" />
-    <ClInclude Include="CFunction.h" />
-    <ClInclude Include="CValue.h" />
-    <ClInclude Include="CVariable.h" />
+    <ClInclude Include="AdditionalStruct.h" />
+    <ClInclude Include="BinaryFunction.h" />
+    <ClInclude Include="Calculator.h" />
+    <ClInclude Include="CalculatorApp.h" />
+    <ClInclude Include="IValue.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UnaryFunction.h" />
+    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
