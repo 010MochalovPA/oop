@@ -10,10 +10,7 @@ public:
 	bool HandleCommand();
 
 private:
-
-	//Args ParseArgs(const std::string& input);
 	bool CreateVar(const std::string& args);
-	// std::optional<std::string> GetArgsForVariable(const std::string& args);
 	bool AssignLet(const std::string& args);
 	bool CreateFunction(const std::string& args);
 	bool PrintVariables(const std::string& args);
