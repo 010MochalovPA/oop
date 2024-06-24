@@ -128,10 +128,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\CMyString\MyIterator.cpp" />
     <ClCompile Include="..\CMyString\MyString.cpp" />
     <ClCompile Include="CMyStringTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\CMyString\MyIterator.h" />
     <ClInclude Include="..\CMyString\MyString.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

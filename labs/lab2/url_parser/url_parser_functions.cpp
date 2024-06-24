@@ -4,11 +4,11 @@
 bool ParseURL(std::string const& url, Protocol& protocol, unsigned int& port, std::string& host, std::string& document) {
 	std::cmatch result;
 	
-	std::regex reg("^([\\w.]+)" //(1-protocol) любой регистр +
-				   ":\\/\\/" // (://)
-				   "([\\w.]+)" // (2-host)
-				   "(:([\\d]+))?" // (3-:port(4-port))
-				   "((\\/([^\\/]+)?)+)?$" // (5-document)
+	std::regex reg("^([\w.]+)" //(1-protocol) любой регистр +
+				   "://" // (://)
+				   "([\w.]+)" // (2-host)
+				   "(:(\d+))?" // (3-:port(4-port))
+				   "(\/([^\s]+)))?)$" // (5-document)
 	);
 
 	if (std::regex_search(url.c_str(), result, reg))

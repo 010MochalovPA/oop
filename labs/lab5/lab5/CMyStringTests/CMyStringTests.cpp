@@ -37,24 +37,24 @@ SCENARIO("Проверка конструкторов MyString")
 	{
 		WHEN("Создаем строку")
 		{
-			MyString string("string\0");
+			MyString string("str\0ing");
 
-			THEN("Строка содержит все необходимые символы")
+			THEN("Строка содержит 3 символа")
 			{
-				CHECK(string.GetLength() == 6);
+				CHECK(string.GetLength() == 3);
 				CHECK(string.GetStringData()[string.GetLength()] == CODE_ZERO_CHAR);
-				CHECK(std::strcmp(string.GetStringData(), "string") == 0);
+				CHECK(std::strcmp(string.GetStringData(), "str") == 0);
 			}
 
 			THEN("Создаем строку из всей изначальой строки символов")
 			{
-				MyString string("string\0", 7);
+				MyString string("str\0ing", 7);
 
 				THEN("Получаем полную изначальную строку")
 				{
 					CHECK(string.GetLength() == 7);
 					CHECK(string.GetStringData()[string.GetLength()] == CODE_ZERO_CHAR);
-					CHECK(std::equal(string.GetStringData(), string.GetStringData() + string.GetLength(), "string\0"));
+					CHECK(std::equal(string.GetStringData(), string.GetStringData() + string.GetLength(), "str\0ing"));
 				}
 			}
 		}
@@ -317,5 +317,82 @@ SCENARIO("Проверка операторов ввода вывода в поток")
 				}
 			}
 		}
+	}
+}
+
+SCENARIO("Тестирование итератора")
+{
+	GIVEN("Создаем MyString и MyIterator")
+	{
+		MyString myString("Test");
+		MyIterator itBegin = myString.Begin();
+		MyIterator itEnd = myString.End();
+
+		WHEN("Проверяем оператор *")
+		{
+			THEN("Ожидаем корректное значение")
+			{
+				CHECK(*itBegin == 'T');
+			}
+		}
+
+		WHEN("Проверяем оператор постфиксный ++")
+		{
+			THEN("Ожидаем корректное перемещение к следующему элементу")
+			{
+				MyIterator it = itBegin++;
+				CHECK(*it == 'T');
+				CHECK(*itBegin == 'e');
+			}
+		}
+
+		WHEN("Проверяем оператор префиксный ++")
+		{
+			THEN("Ожидаем корректное перемещение к следующему элементу")
+			{
+				MyIterator it = ++itBegin;
+				CHECK(*it == 'e');
+				CHECK(*itBegin == 'e');
+			}
+		}
+
+		WHEN("Проверяем оператор постфиксный --")
+		{
+			THEN("Ожидаем корректное перемещение к предыдущему элементу")
+			{
+				MyIterator it = itEnd--;
+				CHECK(*it == CODE_ZERO_CHAR);
+				CHECK(*itEnd == 't');
+			}
+		}
+
+		WHEN("Проверяем оператор префиксный --")
+		{
+			THEN("Ожидаем корректное перемещение к предыдущему элементу")
+			{
+				MyIterator it = --itEnd;
+				CHECK(*it == 't');
+				CHECK(*itEnd == 't');
+			}
+		}
+
+		WHEN("Проверяем оператор +")
+		{
+			THEN("Ожидаем корректное увеличение итератора")
+			{
+
+				MyIterator it = itBegin + 3;
+				CHECK(*it == 't');
+			}
+		}
+
+		/*WHEN("Проверяем оператор -")
+		{
+			THEN("Ожидаем корректное вычитание числа из итератора")
+			{
+				MyIterator it = itEnd - 7;
+				CHECK(*it == 'W');
+			}
+		}*/
 	}
 }
