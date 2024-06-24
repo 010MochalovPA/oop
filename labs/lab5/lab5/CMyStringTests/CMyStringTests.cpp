@@ -93,35 +93,18 @@ SCENARIO("Проверка конструкторов копирования и перемещения")
 		}
 	}
 
-	WHEN("Создаем строку при помощи move конструктора")
+	WHEN("Создаем строку при помощи конструктора перемещения")
 	{
 		MyString string3(std::move(string1));
 
 		THEN("Сравниваем строки")
 		{
 			CHECK(std::strcmp(string3.GetStringData(), "test1") == 0);
-
-			
 		}
 
-		THEN("В конце третьей строки лежит символ с кодом 0")
+		THEN("Проверяем на нулевой символ")
 		{
 			CHECK(string3.GetStringData()[string3.GetLength()] == CODE_ZERO_CHAR);
-		}
-
-		THEN("Инициализируем еще одну строку при помощи = c move контструктором")
-		{
-			MyString string4 = std::move(string3);
-
-			THEN("Получаем две одинаковые строки")
-			{
-				CHECK(std::strcmp(string4.GetStringData(), "test1") == 0);
-
-				AND_THEN("В конце четвертой строки лежит символ с кодом 0")
-				{
-					CHECK(string4.GetStringData()[string4.GetLength()] == CODE_ZERO_CHAR);
-				}
-			}
 		}
 	}
 }

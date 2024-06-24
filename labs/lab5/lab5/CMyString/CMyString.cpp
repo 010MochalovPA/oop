@@ -3,5 +3,7 @@
 
 int main()
 {
-	std::cout << "CMyString" << std::endl;
+	MyString string("MyString");
+
+	return 1;
 }

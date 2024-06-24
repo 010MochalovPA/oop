@@ -71,9 +71,9 @@ MyString& MyString::operator=(const MyString& string)
 {
 	if (this != &string)
 	{
-		MyString temp(string);
-		std::swap(m_size, temp.m_size);
-		std::swap(m_ptrString, temp.m_ptrString);
+		MyString tmp(string);
+		std::swap(m_size, tmp.m_size);
+		std::swap(m_ptrString, tmp.m_ptrString);
 	}
 
 	return *this;
